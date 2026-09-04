@@ -1,54 +1,50 @@
-# Dev Days
+# Bitanyanmi — Portfolio & Dev Days
 
-A multi-project workspace for building and learning through small web projects.
+My data analyst portfolio, plus a growing collection of small web projects.
 
-**Live site:** https://Bitanyanmi-MLSA.github.io/dev-days/
+**Live site:** https://bitanyanmi-mlsa.github.io/dev-days/
 
-## Workspace layout
+- **Landing page** → the portfolio (`index.html`)
+- **Projects gallery** → `projects.html`, reachable from the nav, the "Explore projects" banner, and the footer
+
+## Layout
 
 ```text
-Dev_Days/
-├── index.html                  # Landing page linking to every project
+/
+├── index.html          # Portfolio — the landing page
+├── style.css           # Portfolio styles
+├── app.js              # Portfolio behaviour (filters, modals, contact form)
+├── projects.html       # Gallery of all side projects
 ├── projects/
-│   ├── 01-dream-career-explorer/
-│   ├── 02-data-analyst-portfolio/
-│   └── ...
+│   └── 01-dream-career-explorer/
 ├── shared/
-│   ├── assets/                 # Shared images (e.g. Passport.jpg)
+│   ├── assets/         # Shared images (Passport.jpg)
 │   └── snippets/
-├── .nojekyll                   # Serve files as-is on GitHub Pages
+├── .nojekyll           # Serve files as-is on GitHub Pages
+├── CONTACT-FORM.md     # Contact form setup & troubleshooting
 └── README.md
 ```
 
-## Project conventions
+## Adding a new project
 
-- Keep each project self-contained inside `projects/NN-project-name/`.
-- Use a two-digit number so projects stay in learning order.
-- Keep the main entry point named `index.html`.
-- Keep project-specific styles and scripts next to the entry point.
-- Put reusable images, snippets, or components in `shared/`.
-- Add each new project as a card in the root `index.html`.
+1. Create `projects/NN-project-name/` with an `index.html` inside.
+2. Keep its `style.css` and `app.js` next to the entry point.
+3. Put shared images in `shared/assets/`.
+4. Add a card for it in `projects.html`.
+5. Add a row to the table below.
 
 ## Projects
 
-| # | Project | Status |
-|---|---|---|
-| 01 | [Dream Career Explorer](projects/01-dream-career-explorer/) | Complete |
-| 02 | [Data Analyst Portfolio](projects/02-data-analyst-portfolio/) | Complete |
-| 03 | Planned | Ready |
-| 04 | Planned | Ready |
-| 05 | Planned | Ready |
-| 06 | Planned | Ready |
-| 07 | Planned | Ready |
-| 08 | Planned | Ready |
-| 09 | Planned | Ready |
-| 10 | Planned | Ready |
-| 11 | Planned | Ready |
+| # | Project | Location | Status |
+|---|---|---|---|
+| 01 | Dream Career Explorer | [`projects/01-dream-career-explorer/`](projects/01-dream-career-explorer/) | Complete |
+| 02 | Data Analyst Portfolio | site root (`index.html`) | Complete |
+| 03 | — | — | Planned |
 
 ## Running locally
 
-Some features (like the portfolio contact form) require a real web server and will not
-work from `file:///`. Serve the folder over HTTP instead:
+The contact form needs a real web server and will not work from `file:///`.
+Serve the folder over HTTP instead:
 
 ```powershell
 cd C:\Users\Bitanyanmi\Desktop\Dev_Days
@@ -57,15 +53,26 @@ python -m http.server 8777
 
 Then open <http://localhost:8777/>.
 
+## Deploying
+
+GitHub Pages serves the `main` branch root. Any push goes live automatically:
+
+```powershell
+git add -A
+git commit -m "Your message"
+git push
+```
+
 ## Security
 
-These are static sites with no backend, so the attack surface is small. Hardening applied:
+Static sites with no backend, so the attack surface is small. Hardening applied:
 
 - **Content Security Policy** on every page via `<meta http-equiv>`, restricting scripts to
   same-origin only and allowlisting exactly the external origins in use.
-- **`script-src 'self'`** with no inline scripts and no inline event handlers anywhere.
+- **`script-src 'self'`** — no inline scripts and no inline event handlers anywhere.
 - **Referrer policy** set to `strict-origin-when-cross-origin`.
 - **`base-uri 'none'`** and **`object-src 'none'`** to block base-tag hijacking and plugin embedding.
-- **`form-action`** restricted to the form endpoint (and `'none'` on pages with no forms).
+- **`form-action`** restricted to the form endpoint (`'none'` on pages with no forms).
 - Contact form uses a honeypot field plus the provider's captcha to limit spam.
+- HTTPS enforced; plain HTTP redirects with a 301.
 - No secrets, tokens, or credentials are stored in the repository.

@@ -2,71 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://formsubmit.co; form-action https://formsubmit.co" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Dev Days — a growing collection of web projects built by Bitanyanmi." />
-  <title>Dev Days — Project Collection</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1d2a'/%3E%3Ctext x='32' y='45' font-size='36' font-family='monospace' text-anchor='middle' fill='%2352d6c4'%3ED%3C/text%3E%3C/svg%3E" />
+  <meta name="description" content="Bitanyanmi — data analyst and Power BI storyteller helping teams turn data into confident decisions." />
+  <title>Bitanyanmi | Data Analyst & Power BI Storyteller</title>
+  <link rel="icon" href="shared/assets/Passport.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    :root{--ink:#0d1d2a;--navy:#102d3b;--teal:#52d6c4;--cream:#f5f2ec;--orange:#ff8f5c;--muted:#65727a;--line:#d9dfdc}
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--cream);color:var(--ink);font-family:Manrope,sans-serif}
-    .mono{font-family:"DM Mono",monospace;letter-spacing:1px}
-    header{padding:90px 8vw 55px;background:var(--navy);color:#fff}
-    .kicker{font-size:10px;letter-spacing:1.5px;color:var(--teal)}
-    h1{font-size:clamp(42px,6vw,76px);line-height:1.02;letter-spacing:-3px;margin:22px 0 20px}
-    h1 span{color:var(--teal)}
-    header p{max-width:470px;color:#bccbd0;line-height:1.7;font-size:15px;margin:0}
-    main{padding:70px 8vw 90px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}
-    .card{display:block;background:#fff;border-radius:8px;padding:28px;text-decoration:none;color:var(--ink);border:1px solid transparent;transition:.22s}
-    .card:hover{transform:translateY(-4px);border-color:#bfd6d0;box-shadow:0 18px 36px #0d1d2a12}
-    .num{font-size:10px;color:var(--orange);letter-spacing:1px}
-    .card h2{font-size:24px;letter-spacing:-1px;margin:14px 0 10px}
-    .card p{color:var(--muted);font-size:12px;line-height:1.65;margin:0 0 20px}
-    .tags{display:flex;gap:6px;flex-wrap:wrap}
-    .tag{border:1px solid var(--line);border-radius:20px;padding:5px 10px;font-size:9px;color:var(--muted)}
-    .go{display:block;margin-top:20px;color:var(--orange);font-size:12px;font-weight:800}
-    .soon{background:transparent;border:1px dashed #c3cdc9;box-shadow:none}
-    .soon:hover{transform:none;border-color:#c3cdc9;box-shadow:none}
-    .soon h2,.soon p{color:var(--muted)}
-    footer{padding:26px 8vw;background:var(--ink);color:#8ba1a6;font-size:9px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
-    @media(max-width:620px){header{padding:64px 7vw 44px}main{padding:52px 7vw 70px}footer{padding:24px 7vw}}
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <span class="kicker mono">DEV DAYS / PROJECT COLLECTION</span>
-    <h1>Building, one<br /><span>project at a time.</span></h1>
-    <p>A growing collection of web projects — each one a chance to practice something new and make it feel finished.</p>
+  <div class="noise"></div>
+  <header class="site-header">
+    <a class="logo" href="#top" aria-label="Go home"><span class="logo-mark">B</span><span>bitanyanmi<span class="accent">.data</span></span></a>
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a href="#work">Selected work</a><a href="#approach">Approach</a><a href="#about">About</a><a href="projects.html">Projects</a><a href="#contact">Let's talk <span>↗</span></a>
+    </nav>
+    <button class="menu-toggle" aria-label="Toggle menu">☰</button>
   </header>
-  <main>
-    <div class="grid">
-      <a class="card" href="projects/02-data-analyst-portfolio/">
-        <span class="num mono">PROJECT 02</span>
-        <h2>Data Analyst Portfolio</h2>
-        <p>A professional portfolio for a data analyst — case studies, an interactive dashboard visual, and a working contact form.</p>
-        <div class="tags"><span class="tag">Power BI</span><span class="tag">Portfolio</span><span class="tag">Responsive</span></div>
-        <span class="go">View project ↗</span>
-      </a>
-      <a class="card" href="projects/01-dream-career-explorer/">
-        <span class="num mono">PROJECT 01</span>
-        <h2>Dream Career Explorer</h2>
-        <p>Explore career paths with search, filters, saved favourites, and a short quiz that suggests a starting direction.</p>
-        <div class="tags"><span class="tag">JavaScript</span><span class="tag">Quiz</span><span class="tag">Local storage</span></div>
-        <span class="go">View project ↗</span>
-      </a>
-      <div class="card soon">
-        <span class="num mono">PROJECT 03</span>
-        <h2>Coming next</h2>
-        <p>The next build is on its way. This collection grows one project at a time.</p>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="status"><img class="status-avatar" src="shared/assets/Passport.jpg" alt="Bitanyanmi" /><span></span> Available for meaningful projects</div>
+          <h1>I turn <span class="highlight">messy data</span> into clear decisions.</h1>
+          <p class="hero-lead">I'm a data analyst and Power BI storyteller who helps people see what the numbers are really saying — and what to do next.</p>
+          <div class="hero-actions"><a class="button button-primary" href="#work">Explore my work <span>↓</span></a><a class="button button-ghost" href="#contact">Start a conversation <span>↗</span></a></div>
+          <div class="hero-note"><span class="mono">01</span><span class="line"></span><span>Analysis · Visualization · Impact</span></div>
+        </div>
+        <div class="hero-visual">
+          <div class="visual-label mono">LIVE / ANALYTICS VIEW</div>
+          <div class="chart-card">
+            <div class="chart-head"><div><small>REVENUE PERFORMANCE</small><strong>$1.84M</strong></div><span class="positive">↑ 18.6%</span></div>
+            <div class="chart-area"><div class="y-labels"><span>2.0M</span><span>1.5M</span><span>1.0M</span><span>0.5M</span><span>0</span></div><svg viewBox="0 0 500 220" preserveAspectRatio="none" aria-label="Revenue trend chart"><defs><linearGradient id="fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#52d6c4" stop-opacity=".35"/><stop offset="1" stop-color="#52d6c4" stop-opacity="0"/></linearGradient></defs><path class="area" d="M0,190 C45,175 60,155 100,163 S145,119 185,138 S220,116 255,118 S300,83 330,99 S370,45 410,64 S450,35 500,14 V220 H0Z"/><path class="line-chart" d="M0,190 C45,175 60,155 100,163 S145,119 185,138 S220,116 255,118 S300,83 330,99 S370,45 410,64 S450,35 500,14"/></svg></div>
+            <div class="chart-months mono"><span>JAN</span><span>MAR</span><span>MAY</span><span>JUL</span><span>SEP</span><span>NOV</span></div>
+          </div>
+          <div class="metric-card metric-one"><small>DECISION SPEED</small><strong>2.4<span>x</span></strong><em>faster</em></div>
+          <div class="metric-card metric-two"><small>DATA QUALITY</small><strong>96<span>%</span></strong><em class="teal">trusted</em></div>
+          <div class="visual-orbit"></div>
+        </div>
       </div>
-    </div>
+      <div class="client-strip"><span class="mono">TOOLS I WORK WITH</span><strong>Power BI</strong><strong>SQL</strong><strong>Excel</strong><strong>Python</strong><strong>DAX</strong><strong>Power Query</strong></div>
+    </section>
+
+    <section class="section work-section" id="work">
+      <div class="section-top"><div><span class="eyebrow mono">SELECTED WORK / 2024—25</span><h2>Work that makes<br /><span>an impact.</span></h2></div><p>Every dashboard should answer a better question. Here's a look at how I turn analysis into action.</p></div>
+      <div class="work-filters"><button class="filter active" data-filter="all">All projects</button><button class="filter" data-filter="power-bi">Power BI</button><button class="filter" data-filter="sql">SQL & data</button><button class="filter" data-filter="strategy">Strategy</button></div>
+      <div class="project-grid">
+        <article class="project-card featured" data-category="power-bi strategy" data-project="retail"><div class="project-image retail"><div class="mini-dashboard"><div class="mini-title">RETAIL PULSE <span>•••</span></div><div class="mini-kpis"><b>$2.4M<small>Sales</small></b><b>+24%<small>Growth</small></b></div><div class="mini-bars"><i style="height:45%"></i><i style="height:67%"></i><i style="height:53%"></i><i style="height:82%"></i><i style="height:95%"></i><i style="height:74%"></i><i style="height:100%"></i></div></div></div><div class="project-info"><div><span class="project-type">POWER BI / RETAIL</span><h3>Retail Pulse</h3></div><button class="view-project" aria-label="View Retail Pulse project">↗</button><p>One source of truth for a growing retail team — from daily sales to regional opportunity.</p><div class="project-result"><span>RESULT</span><strong>24% lift in regional sales focus</strong></div></div></article>
+        <article class="project-card" data-category="sql strategy" data-project="operations"><div class="project-image operations"><div class="ops-lines"><span>QUERY / 0042</span><b>Operational<br />clarity.</b><i></i><i></i><i></i><i></i></div></div><div class="project-info"><div><span class="project-type">SQL / OPERATIONS</span><h3>Flow State</h3></div><button class="view-project" aria-label="View Flow State project">↗</button><p>Finding the bottlenecks hiding inside a complex service operation.</p><div class="project-result"><span>RESULT</span><strong>18 hours saved per week</strong></div></div></article>
+        <article class="project-card" data-category="power-bi" data-project="people"><div class="project-image people"><div class="people-chart"><span>PEOPLE ANALYTICS</span><b>86.4%</b><small>retention rate</small><div><i style="height:42%"></i><i style="height:65%"></i><i style="height:53%"></i><i style="height:80%"></i><i style="height:72%"></i></div></div></div><div class="project-info"><div><span class="project-type">POWER BI / PEOPLE</span><h3>People Signals</h3></div><button class="view-project" aria-label="View People Signals project">↗</button><p>A human-centered view of retention, growth, and the employee experience.</p><div class="project-result"><span>RESULT</span><strong>Earlier action on retention risk</strong></div></div></article>
+      </div>
+      <a class="explore-more" href="projects.html"><span><span class="eyebrow mono">BEYOND THE DASHBOARDS</span><strong>I build things on the side, too.</strong><small>Small web projects I make to keep learning — have a look around.</small></span><em>Explore projects ↗</em></a>
+    </section>
+
+    <section class="section approach-section" id="approach">
+      <div class="approach-intro"><span class="eyebrow mono">THE WAY I WORK</span><h2>Less dashboard.<br /><span>More direction.</span></h2><p>Good analysis is not about adding more charts. It's about creating the confidence to make the next move.</p></div>
+      <div class="approach-steps"><div class="approach-step"><span class="step-count">01</span><div><h3>Ask better questions</h3><p>Before I touch a dataset, I get curious about the decision behind it. The right question makes the rest clearer.</p></div></div><div class="approach-step"><span class="step-count">02</span><div><h3>Make complexity feel simple</h3><p>I build clean models and intuitive visuals so anyone — not just the data team — can find the signal.</p></div></div><div class="approach-step"><span class="step-count">03</span><div><h3>Design for action</h3><p>The final test is what happens next. Every insight comes with context, a point of view, and a path forward.</p></div></div></div>
+    </section>
+
+    <section class="about-section" id="about"><div class="about-portrait"><img src="shared/assets/Passport.jpg" alt="Portrait of Bitanyanmi, data analyst" /><span class="portrait-badge">✦</span><span class="portrait-caption mono">BITANYANMI / DATA ANALYST</span></div><div class="about-copy"><span class="eyebrow mono">A LITTLE ABOUT ME</span><h2>Curious by nature.<br /><span>Precise by practice.</span></h2><p>I'm Bitanyanmi — a data analyst with a strong Power BI background and a soft spot for turning complicated questions into useful stories.</p><p>I care about the space between a metric and a meaningful decision. That's where good analysis becomes real impact.</p><a class="inline-link" href="#contact">More about my journey <span>↗</span></a></div><div class="about-facts"><div><span class="mono">FOCUS</span><strong>Business<br />intelligence</strong></div><div><span class="mono">BASED IN</span><strong>Curious<br />everywhere</strong></div><div><span class="mono">SIGNATURE</span><strong>Clarity over<br />complexity</strong></div></div></section>
+
+    <section class="contact-section" id="contact"><div class="contact-copy"><span class="eyebrow mono">HAVE A QUESTION OR A PROJECT?</span><h2>Let's make your<br /><span>data useful.</span></h2><p>Tell me what you're working on, what feels stuck, or what you're curious about. I'll bring the questions.</p><a class="email-link" href="mailto:justicennyiimock@gmail.com">justicennyiimock@gmail.com <span>↗</span></a></div><form id="contactForm" class="contact-form" action="https://formsubmit.co/ajax/justicennyiimock@gmail.com" method="POST"><label>Your name<input required type="text" name="name" placeholder="Jane Smith" /></label><label>Your email<input required type="email" name="email" placeholder="jane@company.com" /></label><label>What can I help with?<textarea required rows="4" name="message" placeholder="Tell me a little about your project..."></textarea></label><input type="hidden" name="_subject" value="New message from your portfolio site" /><input type="hidden" name="_template" value="table" /><input type="hidden" name="_captcha" value="true" /><input type="text" name="_honey" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true" /><button class="button button-light" type="submit">Send a message <span>↗</span></button><p id="formMessage" class="form-message" aria-live="polite"></p><p class="form-privacy">Your message is delivered to my inbox through FormSubmit, a third-party form service. It is never stored on this site.</p></form></section>
   </main>
-  <footer><span class="mono">DEV DAYS © 2025</span><span class="mono">BUILT BY BITANYANMI</span></footer>
+  <footer class="site-footer"><a class="logo" href="#top"><span class="logo-mark">B</span><span>bitanyanmi<span class="accent">.data</span></span></a><span class="mono">DATA WITH INTENTION © 2025</span><div><a href="#work">Work</a><a href="projects.html">Projects</a><a href="#contact">Contact</a><a href="#top">Back to top ↑</a></div></footer>
+
+  <div id="projectModal" class="modal-backdrop hidden"><div class="modal"><button class="modal-close" aria-label="Close project details">×</button><div id="projectModalContent"></div></div></div>
+  <script src="app.js"></script>
 </body>
 </html>
