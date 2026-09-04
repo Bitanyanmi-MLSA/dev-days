@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="School Election Voting App — a simple, secure-feeling ballot for student council elections." />
+  <title>School Election — Student Council Vote</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314142b'/%3E%3Ctext x='32' y='46' font-size='36' text-anchor='middle' fill='%23fbbf24'%3E%E2%9C%93%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="masthead">
+    <div class="crest" aria-hidden="true">✓</div>
+    <div class="masthead-text">
+      <strong>Greenfield High School</strong>
+      <span>Student Council Election 2025</span>
+    </div>
+    <div class="election-status" id="electionStatus">
+      <span class="status-dot"></span><span id="statusText">Voting is open</span>
+    </div>
+  </header>
+
+  <nav class="stepper" id="stepper" aria-label="Voting progress">
+    <ol>
+      <li data-step="checkin"><span class="step-num">1</span> Check in</li>
+      <li data-step="ballot"><span class="step-num">2</span> Ballot</li>
+      <li data-step="review"><span class="step-num">3</span> Review</li>
+      <li data-step="done"><span class="step-num">4</span> Confirm</li>
+    </ol>
+  </nav>
+
+  <main>
+    <!-- STEP 1 — CHECK IN -->
+    <section class="view active" id="view-checkin">
+      <div class="panel">
+        <span class="kicker">STEP 1 OF 4</span>
+        <h1>Let's check you in.</h1>
+        <p class="lead">Enter your student ID to receive your ballot. Each student may vote once.</p>
+
+        <form id="checkinForm" novalidate>
+          <div class="field">
+            <label for="studentId">Student ID</label>
+            <input id="studentId" type="text" inputmode="latin" autocomplete="off" placeholder="e.g. STU2045" aria-describedby="idHint idError" />
+            <small id="idHint" class="hint">4–12 letters and numbers, exactly as printed on your school card.</small>
+            <p id="idError" class="error" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label for="studentName">Your name <span class="optional">(optional)</span></label>
+            <input id="studentName" type="text" autocomplete="off" placeholder="Ada Lovelace" />
+            <small class="hint">Only used to greet you on screen. Your name is never attached to your ballot.</small>
+          </div>
+          <button class="btn btn-primary" type="submit">Get my ballot →</button>
+        </form>
+
+        <div class="privacy-note">
+          <strong>Your vote is secret.</strong>
+          Your ID is recorded only to mark that you have voted. It is stored separately from your
+          choices, so no one can trace a ballot back to you.
+        </div>
+      </div>
+      <aside class="side-card">
+        <h2>How voting works</h2>
+        <ol class="how-list">
+          <li><span>1</span> Check in with your student ID.</li>
+          <li><span>2</span> Choose one candidate for each position.</li>
+          <li><span>3</span> Review your ballot before submitting.</li>
+          <li><span>4</span> Get a receipt code as proof you voted.</li>
+        </ol>
+        <p class="side-foot">You can abstain from any position you'd rather not vote on.</p>
+      </aside>
+    </section>
+
+    <!-- STEP 2 — BALLOT -->
+    <section class="view" id="view-ballot">
+      <div class="ballot-head">
+        <div>
+          <span class="kicker">STEP 2 OF 4</span>
+          <h1>Your ballot</h1>
+          <p class="lead" id="greeting">Choose one candidate for each position.</p>
+        </div>
+        <div class="ballot-progress">
+          <span class="mono" id="progressLabel">0 of 4 chosen</span>
+          <div class="progress-track"><span id="progressBar"></span></div>
+        </div>
+      </div>
+      <form id="ballotForm"></form>
+      <div class="ballot-actions">
+        <button class="btn btn-ghost" type="button" id="backToCheckin">← Back</button>
+        <button class="btn btn-primary" type="button" id="toReview">Review my ballot →</button>
+      </div>
+    </section>
+
+    <!-- STEP 3 — REVIEW -->
+    <section class="view" id="view-review">
+      <div class="panel wide">
+        <span class="kicker">STEP 3 OF 4</span>
+        <h1>Check before you cast.</h1>
+        <p class="lead">Once submitted, your ballot cannot be changed. Please review your choices.</p>
+        <div id="reviewList" class="review-list"></div>
+        <div class="final-warning">
+          <span aria-hidden="true">!</span>
+          <p>Submitting is final. Make sure everything below is right.</p>
+        </div>
+        <div class="ballot-actions">
+          <button class="btn btn-ghost" type="button" id="backToBallot">← Change my choices</button>
+          <button class="btn btn-primary" type="button" id="castVote">Cast my vote</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 4 — CONFIRMATION -->
+    <section class="view" id="view-done">
+      <div class="panel centered">
+        <div class="tick" aria-hidden="true">✓</div>
+        <h1>Your vote has been recorded.</h1>
+        <p class="lead">Thank you for taking part in your student council election.</p>
+        <div class="receipt">
+          <small>YOUR RECEIPT CODE</small>
+          <strong id="receiptCode">—</strong>
+          <span>Keep this if you need to prove you voted. It does not reveal your choices.</span>
+        </div>
+        <div class="ballot-actions center">
+          <button class="btn btn-ghost" type="button" id="copyReceipt">Copy code</button>
+          <button class="btn btn-primary" type="button" id="viewResults">See live results →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section class="view" id="view-results">
+      <div class="results-head">
+        <div>
+          <span class="kicker">LIVE TALLY</span>
+          <h1>Results</h1>
+          <p class="lead"><span id="totalBallots">0</span> ballots counted so far.</p>
+        </div>
+        <div class="results-actions">
+          <button class="btn btn-ghost small" type="button" id="demoData">Load sample votes</button>
+          <button class="btn btn-ghost small" type="button" id="resetAll">Reset election</button>
+          <button class="btn btn-primary small" type="button" id="backHome">Back to start</button>
+        </div>
+      </div>
+      <div id="resultsGrid" class="results-grid"></div>
+      <p class="results-note">
+        This is a classroom demonstration. Results are stored in this browser only, so each device
+        keeps its own tally.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <span class="mono">SCHOOL ELECTION VOTING APP</span>
+    <a href="../../projects.html">← All projects</a>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>

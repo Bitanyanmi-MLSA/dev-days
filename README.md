@@ -40,7 +40,8 @@ My data analyst portfolio, plus a growing collection of small web projects.
 |---|---|---|---|
 | 01 | Dream Career Explorer | [`projects/01-dream-career-explorer/`](projects/01-dream-career-explorer/) | Complete |
 | 02 | Data Analyst Portfolio | site root (`index.html`) | Complete |
-| 03 | — | — | Planned |
+| 03 | School Election Voting App | [`projects/03-school-election-voting/`](projects/03-school-election-voting/) | Complete |
+| 04 | — | — | Planned |
 
 ## Running locally
 
