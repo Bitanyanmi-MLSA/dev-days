@@ -69,7 +69,7 @@ git push
 The portfolio footer shows a live visit count, powered by a free, cookie-free counter.
 Check the total any time without adding to it:
 
-<https://abacus.jasoncameron.dev/get/bitanyanmi-mlsa-dev-days/site-visits>
+<https://abacus.jasoncameron.dev/get/bitanyanmi-mlsa-dev-days/visits-live>
 
 See [`VISITOR-COUNTER.md`](VISITOR-COUNTER.md) for details.
 

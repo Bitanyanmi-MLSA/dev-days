@@ -17,6 +17,6 @@ document.querySelector(".menu-toggle").addEventListener("click",()=>{const nav=d
    A visit is only counted once per browser session, so refreshing the page
    does not inflate the number. Later views in the same session just read
    the current total. If the service is unreachable the counter stays hidden. */
-const COUNTER_BASE="https://abacus.jasoncameron.dev",COUNTER_NS="bitanyanmi-mlsa-dev-days",COUNTER_KEY="site-visits";
+const COUNTER_BASE="https://abacus.jasoncameron.dev",COUNTER_NS="bitanyanmi-mlsa-dev-days",COUNTER_KEY="visits-live";
 function animateCount(el,target){const duration=900,start=performance.now();function frame(now){const progress=Math.min((now-start)/duration,1),eased=1-Math.pow(1-progress,3);el.textContent=Math.round(target*eased).toLocaleString();if(progress<1)requestAnimationFrame(frame)}requestAnimationFrame(frame)}
 (async function showVisitCount(){const wrap=document.querySelector("#visitCounter"),value=document.querySelector("#visitCount");if(!wrap||!value)return;let counted=false;try{counted=sessionStorage.getItem("visit-counted")==="1"}catch(e){}const endpoint=`${COUNTER_BASE}/${counted?"get":"hit"}/${COUNTER_NS}/${COUNTER_KEY}`;try{const response=await fetch(endpoint,{cache:"no-store"});if(!response.ok)throw new Error("counter unavailable");const data=await response.json();if(typeof data.value!=="number")throw new Error("unexpected response");try{sessionStorage.setItem("visit-counted","1")}catch(e){}wrap.hidden=false;animateCount(value,data.value)}catch(error){wrap.hidden=true}})();

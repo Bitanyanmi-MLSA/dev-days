@@ -9,7 +9,7 @@ hit counter. No account, no tracking scripts, and no personal data is collected.
 
 - **Counter location:** footer of `index.html` (`#visitCounter`)
 - **Logic:** bottom of `app.js`
-- **Namespace / key:** `bitanyanmi-mlsa-dev-days` / `site-visits`
+- **Namespace / key:** `bitanyanmi-mlsa-dev-days` / `visits-live`
 
 A visit is counted **once per browser session**, so refreshing the page does not
 inflate the number. Later page views in the same session simply read the current total.
@@ -21,7 +21,7 @@ the rest of the page is unaffected.
 
 Open this link in any browser. It **reads** the total without adding to it:
 
-<https://abacus.jasoncameron.dev/get/bitanyanmi-mlsa-dev-days/site-visits>
+<https://abacus.jasoncameron.dev/get/bitanyanmi-mlsa-dev-days/visits-live>
 
 It returns a small piece of JSON:
 
@@ -39,7 +39,7 @@ A brand-new key starts at zero automatically:
 ```js
 const COUNTER_BASE="https://abacus.jasoncameron.dev",
       COUNTER_NS="bitanyanmi-mlsa-dev-days",
-      COUNTER_KEY="site-visits";   // <-- change this to reset
+      COUNTER_KEY="visits-live";   // <-- change this to reset
 ```
 
 ## Hiding the count from visitors
