@@ -22,6 +22,7 @@ My data analyst portfolio, plus a growing collection of small web projects.
 │   └── snippets/
 ├── .nojekyll           # Serve files as-is on GitHub Pages
 ├── CONTACT-FORM.md     # Contact form setup & troubleshooting
+├── VISITOR-COUNTER.md  # How the visit counter works & how to read it
 └── README.md
 ```
 
@@ -62,6 +63,15 @@ git add -A
 git commit -m "Your message"
 git push
 ```
+
+## Visitor counter
+
+The portfolio footer shows a live visit count, powered by a free, cookie-free counter.
+Check the total any time without adding to it:
+
+<https://abacus.jasoncameron.dev/get/bitanyanmi-mlsa-dev-days/site-visits>
+
+See [`VISITOR-COUNTER.md`](VISITOR-COUNTER.md) for details.
 
 ## Security
 
