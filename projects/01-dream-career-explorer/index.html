@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Dream Career Explorer — discover a career path that fits your strengths, interests, and ambitions." />
+  <title>Dream Career Explorer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231b1930'/%3E%3Ctext x='32' y='45' font-size='38' text-anchor='middle' fill='%23f6d86d'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a href="#" class="brand" aria-label="Dream Career Explorer home">
+        <span class="brand-mark">✦</span>
+        <span>Dream<span>Path</span></span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="active" href="#explore">Explore careers</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#saved">Saved <span id="savedCount" class="nav-count">0</span></a>
+      </nav>
+      <button id="quizNavButton" class="button button-dark button-small">Find my path <span>→</span></button>
+    </header>
+
+    <main>
+      <section class="hero" id="explore">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="pulse-dot"></span> Built for your next chapter</div>
+          <h1>Your next great<br /><em>chapter</em> starts here.</h1>
+          <p>Explore careers that match who you are today — and who you're becoming tomorrow.</p>
+          <div class="hero-actions">
+            <button id="startQuizButton" class="button button-primary">Take the 2-min quiz <span>↗</span></button>
+            <a href="#careerGrid" class="text-link">Browse all careers <span>↓</span></a>
+          </div>
+          <div class="social-proof">
+            <div class="avatar-stack" aria-hidden="true">
+              <span>AM</span><span>JK</span><span>RS</span><span>+</span>
+            </div>
+            <div><strong>12,000+ explorers</strong><small>found a direction they love</small></div>
+          </div>
+        </div>
+        <div class="hero-art" aria-label="Career discovery illustration">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="sun-card">
+            <span class="sun-icon">✹</span>
+            <small>Your potential</small>
+            <strong>is bigger<br />than you think.</strong>
+          </div>
+          <div class="floating-card card-purple"><span>↗</span><strong>97%</strong><small>match potential</small></div>
+          <div class="floating-card card-yellow"><span>✦</span><strong>+1,240</strong><small>paths explored</small></div>
+          <div class="hero-blob"></div>
+        </div>
+      </section>
+
+      <section class="section intro-section" id="how-it-works">
+        <div class="section-heading">
+          <div><span class="section-kicker">THE EXPLORE METHOD</span><h2>Make your future<br /><em>feel clearer.</em></h2></div>
+          <p>Career decisions don't have to be a guessing game. Start with curiosity, leave with clarity.</p>
+        </div>
+        <div class="method-grid">
+          <article class="method-card">
+            <span class="step-number">01</span><div class="method-icon violet">✧</div>
+            <h3>Know your spark</h3><p>Uncover the interests, strengths, and values that make you uniquely you.</p>
+          </article>
+          <article class="method-card">
+            <span class="step-number">02</span><div class="method-icon yellow">⌁</div>
+            <h3>Meet your matches</h3><p>See roles that connect your natural energy to meaningful opportunities.</p>
+          </article>
+          <article class="method-card">
+            <span class="step-number">03</span><div class="method-icon orange">↗</div>
+            <h3>Map your next move</h3><p>Turn inspiration into a practical path with skills and steps to get there.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section careers-section" id="careerGrid">
+        <div class="section-heading career-heading">
+          <div><span class="section-kicker">CURATED FOR CURIOUS MINDS</span><h2>Find a path that<br /><em>feels like you.</em></h2></div>
+          <p>Browse real-world roles across the fastest-growing fields. Save the ones that spark something.</p>
+        </div>
+        <div class="toolbar">
+          <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search careers, skills, or industries..." /></label>
+          <div class="filter-group" role="group" aria-label="Career filters">
+            <button class="filter-button active" data-filter="All">All paths</button>
+            <button class="filter-button" data-filter="Creative">Creative</button>
+            <button class="filter-button" data-filter="Technology">Technology</button>
+            <button class="filter-button" data-filter="People">People-first</button>
+            <button class="filter-button" data-filter="Impact">Impact</button>
+          </div>
+        </div>
+        <div id="careerGridItems" class="career-grid"></div>
+        <div id="emptyState" class="empty-state hidden"><span>◌</span><h3>No paths found</h3><p>Try another search or clear your filters.</p><button id="clearFilters" class="text-link">Clear filters</button></div>
+      </section>
+
+      <section class="cta-banner">
+        <div><span class="section-kicker">NOT SURE WHERE TO START?</span><h2>Let your curiosity<br /><em>lead the way.</em></h2></div>
+        <button id="ctaQuizButton" class="button button-light">Discover my matches <span>↗</span></button>
+      </section>
+
+      <section class="section saved-section" id="saved">
+        <div class="saved-header"><div><span class="section-kicker">YOUR COLLECTION</span><h2>Saved <em>for later.</em></h2></div><p>Keep the paths that made you pause. Your future self will thank you.</p></div>
+        <div id="savedGrid" class="saved-grid"><div class="saved-placeholder"><span>♡</span><p>Save a career to start your collection.</p></div></div>
+      </section>
+    </main>
+
+    <footer class="footer"><a href="#" class="brand"><span class="brand-mark">✦</span><span>Dream<span>Path</span></span></a><span>Made for people who believe work can feel like more.</span><span>© 2025 DreamPath</span></footer>
+  </div>
+
+  <div id="careerModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <button class="modal-close" aria-label="Close career details">×</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+  <div id="quizModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="quizTitle">
+    <div class="modal quiz-modal">
+      <button class="modal-close" aria-label="Close quiz">×</button>
+      <div class="quiz-progress"><span id="quizProgressBar"></span></div>
+      <div id="quizContent"></div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

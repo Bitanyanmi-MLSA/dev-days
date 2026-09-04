@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Dev Days — a growing collection of web projects built by Bitanyanmi." />
+  <title>Dev Days — Project Collection</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1d2a'/%3E%3Ctext x='32' y='45' font-size='36' font-family='monospace' text-anchor='middle' fill='%2352d6c4'%3ED%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{--ink:#0d1d2a;--navy:#102d3b;--teal:#52d6c4;--cream:#f5f2ec;--orange:#ff8f5c;--muted:#65727a;--line:#d9dfdc}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:Manrope,sans-serif}
+    .mono{font-family:"DM Mono",monospace;letter-spacing:1px}
+    header{padding:90px 8vw 55px;background:var(--navy);color:#fff}
+    .kicker{font-size:10px;letter-spacing:1.5px;color:var(--teal)}
+    h1{font-size:clamp(42px,6vw,76px);line-height:1.02;letter-spacing:-3px;margin:22px 0 20px}
+    h1 span{color:var(--teal)}
+    header p{max-width:470px;color:#bccbd0;line-height:1.7;font-size:15px;margin:0}
+    main{padding:70px 8vw 90px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}
+    .card{display:block;background:#fff;border-radius:8px;padding:28px;text-decoration:none;color:var(--ink);border:1px solid transparent;transition:.22s}
+    .card:hover{transform:translateY(-4px);border-color:#bfd6d0;box-shadow:0 18px 36px #0d1d2a12}
+    .num{font-size:10px;color:var(--orange);letter-spacing:1px}
+    .card h2{font-size:24px;letter-spacing:-1px;margin:14px 0 10px}
+    .card p{color:var(--muted);font-size:12px;line-height:1.65;margin:0 0 20px}
+    .tags{display:flex;gap:6px;flex-wrap:wrap}
+    .tag{border:1px solid var(--line);border-radius:20px;padding:5px 10px;font-size:9px;color:var(--muted)}
+    .go{display:block;margin-top:20px;color:var(--orange);font-size:12px;font-weight:800}
+    .soon{background:transparent;border:1px dashed #c3cdc9;box-shadow:none}
+    .soon:hover{transform:none;border-color:#c3cdc9;box-shadow:none}
+    .soon h2,.soon p{color:var(--muted)}
+    footer{padding:26px 8vw;background:var(--ink);color:#8ba1a6;font-size:9px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    @media(max-width:620px){header{padding:64px 7vw 44px}main{padding:52px 7vw 70px}footer{padding:24px 7vw}}
+  </style>
+</head>
+<body>
+  <header>
+    <span class="kicker mono">DEV DAYS / PROJECT COLLECTION</span>
+    <h1>Building, one<br /><span>project at a time.</span></h1>
+    <p>A growing collection of web projects — each one a chance to practice something new and make it feel finished.</p>
+  </header>
+  <main>
+    <div class="grid">
+      <a class="card" href="projects/02-data-analyst-portfolio/">
+        <span class="num mono">PROJECT 02</span>
+        <h2>Data Analyst Portfolio</h2>
+        <p>A professional portfolio for a data analyst — case studies, an interactive dashboard visual, and a working contact form.</p>
+        <div class="tags"><span class="tag">Power BI</span><span class="tag">Portfolio</span><span class="tag">Responsive</span></div>
+        <span class="go">View project ↗</span>
+      </a>
+      <a class="card" href="projects/01-dream-career-explorer/">
+        <span class="num mono">PROJECT 01</span>
+        <h2>Dream Career Explorer</h2>
+        <p>Explore career paths with search, filters, saved favourites, and a short quiz that suggests a starting direction.</p>
+        <div class="tags"><span class="tag">JavaScript</span><span class="tag">Quiz</span><span class="tag">Local storage</span></div>
+        <span class="go">View project ↗</span>
+      </a>
+      <div class="card soon">
+        <span class="num mono">PROJECT 03</span>
+        <h2>Coming next</h2>
+        <p>The next build is on its way. This collection grows one project at a time.</p>
+      </div>
+    </div>
+  </main>
+  <footer><span class="mono">DEV DAYS © 2025</span><span class="mono">BUILT BY BITANYANMI</span></footer>
+</body>
+</html>
