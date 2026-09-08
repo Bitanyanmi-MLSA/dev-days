@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src https://app.powerbi.com; form-action 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Power BI case study: modelling 100k Brazilian e-commerce orders to show how late delivery costs 1.73 review stars." />
+  <title>Olist Retail Analytics | Bitanyanmi</title>
+  <link rel="icon" href="../shared/assets/Passport.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{--ink:#0d1d2a;--navy:#102d3b;--teal:#52d6c4;--cream:#f5f2ec;--orange:#ff8f5c;--muted:#65727a;--line:#d9dfdc;--green:#0b6e4f}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:Manrope,sans-serif}
+    .mono{font-family:"DM Mono",monospace;letter-spacing:1px}
+    code{font-family:"DM Mono",monospace;font-size:12px;background:#f0efe9;padding:1px 5px;border-radius:3px;color:var(--ink)}
+
+    header{padding:80px 8vw 60px;background:var(--navy);color:#fff}
+    .backlink{display:inline-flex;align-items:center;gap:9px;color:var(--teal);text-decoration:none;font-size:11px;font-weight:800;margin-bottom:32px}
+    .backlink:hover{color:#fff}
+    .kicker{font-size:10px;letter-spacing:1.5px;color:var(--orange)}
+    h1{font-size:clamp(38px,5.4vw,68px);line-height:1.03;letter-spacing:-3px;margin:20px 0 22px;max-width:15ch}
+    h1 span{color:var(--teal)}
+    .standfirst{max-width:560px;color:#bccbd0;line-height:1.75;font-size:15px;margin:0}
+    .standfirst b{color:#fff;font-weight:700}
+    .meta{display:flex;flex-wrap:wrap;gap:38px;margin-top:46px;padding-top:28px;border-top:1px solid #2d5261}
+    .meta div small{display:block;font:9px "DM Mono";letter-spacing:1px;color:#7f989f;margin-bottom:8px}
+    .meta div strong{font-size:13px;font-weight:700}
+
+    main{padding:0 8vw 90px}
+    section{padding:70px 0;border-bottom:1px solid var(--line)}
+    section:last-of-type{border-bottom:0}
+    .eyebrow{font:10px "DM Mono";letter-spacing:1.5px;color:var(--orange);display:block;margin-bottom:16px}
+    h2{font-size:clamp(28px,3.4vw,42px);letter-spacing:-1.8px;line-height:1.08;margin:0 0 22px}
+    h3{font-size:18px;letter-spacing:-.6px;margin:0 0 9px}
+    p{color:var(--muted);font-size:14px;line-height:1.8;max-width:68ch;margin:0 0 16px}
+    p strong{color:var(--ink)}
+
+    .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:8px}
+    .kpi{background:#fff;padding:24px 22px}
+    .kpi small{display:block;font:9px "DM Mono";letter-spacing:1px;color:var(--muted);margin-bottom:11px}
+    .kpi strong{display:block;font-size:29px;letter-spacing:-1.5px;line-height:1}
+    .kpi strong i{font-style:normal;font-size:16px}
+    .kpi em{display:block;font-style:normal;font-size:10px;color:var(--muted);margin-top:8px}
+    .kpi.hero-kpi{background:var(--ink);color:#fff}
+    .kpi.hero-kpi small,.kpi.hero-kpi em{color:#8fa8ae}
+    .kpi.hero-kpi strong{color:var(--teal)}
+
+    .findings{display:grid;gap:2px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+    .finding{background:#fff;padding:28px 30px;display:grid;grid-template-columns:52px 1fr;gap:20px;align-items:start}
+    .finding .n{font:11px "DM Mono";color:var(--orange);padding-top:4px}
+    .finding p{margin:0;font-size:13px}
+    .pull{display:inline-block;margin-top:14px;padding:9px 14px;background:#eef6f3;border-left:3px solid var(--green);font:11px "DM Mono";color:var(--green);line-height:1.6}
+
+    .traps{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:16px;margin-top:10px}
+    .trap{background:#fff;border:1px solid var(--line);border-top:3px solid var(--orange);border-radius:6px;padding:24px}
+    .trap h3{font-size:15px}
+    .trap p{font-size:12.5px;margin:0}
+    .trap code{font-size:11.5px}
+
+    table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;font-size:13px}
+    th,td{text-align:left;padding:13px 18px;border-bottom:1px solid var(--line)}
+    th{font:9px "DM Mono";letter-spacing:1px;color:var(--muted);background:#faf9f5}
+    tr:last-child td{border-bottom:0}
+
+    .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+    .chip{border:1px solid var(--line);background:#fff;border-radius:20px;padding:7px 13px;font:11px "DM Mono";color:var(--ink)}
+
+    .shot{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:0 0 16px}
+    .shot img{display:block;width:100%;height:auto}
+    .shot figcaption{padding:14px 20px;font:10px "DM Mono";color:var(--muted);border-top:1px solid var(--line)}
+    .shot-placeholder{display:grid;place-items:center;min-height:260px;padding:40px;text-align:center;background:repeating-linear-gradient(135deg,#fbfaf6 0 12px,#f4f2ec 12px 24px);color:var(--muted)}
+    .shot-placeholder b{display:block;font-size:14px;color:var(--ink);margin-bottom:8px}
+    .shot-placeholder span{font-size:12px;line-height:1.7;max-width:46ch;display:block}
+
+    .callout{background:var(--ink);color:#fff;border-radius:8px;padding:34px 36px;margin-top:10px}
+    .callout h3{color:var(--teal);font-size:15px}
+    .callout p{color:#a9bdc2;font-size:13px;margin:0;max-width:74ch}
+    .callout p+p{margin-top:12px}
+    .callout strong{color:#fff}
+
+    .next{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+    .btn{display:inline-flex;align-items:center;gap:16px;border-radius:4px;padding:15px 22px;font-size:11px;font-weight:800;text-decoration:none;transition:.2s}
+    .btn:hover{transform:translateY(-2px)}
+    .btn-primary{background:var(--ink);color:#fff}
+    .btn-ghost{border:1px solid var(--ink);color:var(--ink)}
+
+    footer{padding:26px 8vw;background:var(--ink);color:#8ba1a6;font-size:9px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    footer a{color:#8ba1a6;text-decoration:none}
+    footer a:hover{color:#fff}
+
+    @media(max-width:720px){
+      header{padding:58px 7vw 46px}
+      main{padding:0 7vw 70px}
+      section{padding:52px 0}
+      .meta{gap:26px}
+      .finding{grid-template-columns:1fr;gap:10px}
+      footer{padding:24px 7vw}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="backlink" href="../index.html">← Back to portfolio</a>
+    <span class="kicker mono">CASE STUDY / POWER BI</span>
+    <h1>Late delivery costs <span>1.73 stars.</span></h1>
+    <p class="standfirst">
+      A Power BI model built on 100,000 Brazilian marketplace orders. The brief was
+      "where is the revenue coming from?" — the model answered a more useful question:
+      <b>what quietly destroys customer satisfaction, and how much of the catalogue actually matters.</b>
+    </p>
+    <div class="meta">
+      <div><small>ROLE</small><strong>Modelling, DAX, report design</strong></div>
+      <div><small>TOOLS</small><strong>Power BI · Power Query (M) · DAX</strong></div>
+      <div><small>DATA</small><strong>Olist public dataset · 9 tables</strong></div>
+      <div><small>PERIOD COVERED</small><strong>Sep 2016 — Oct 2018</strong></div>
+      <div><small>CURRENCY</small><strong>Brazilian Real (BRL)</strong></div>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <span class="eyebrow">THE NUMBERS BEHIND IT</span>
+      <h2>What the model measures.</h2>
+      <p>
+        Every figure below is calculated in the report from the raw extract — nothing is rounded
+        for effect. <code>order_items</code> is the fact table, so revenue is the sum of item price
+        and excludes freight.
+      </p>
+      <div class="kpis">
+        <div class="kpi"><small>TOTAL REVENUE</small><strong>R$13.59M</strong><em>112,650 items sold</em></div>
+        <div class="kpi"><small>ORDERS</small><strong>98,666</strong><em>Sep 2016 – Oct 2018</em></div>
+        <div class="kpi"><small>AVG ORDER VALUE</small><strong>R$137.75</strong><em>price, excl. freight</em></div>
+        <div class="kpi"><small>UNIQUE CUSTOMERS</small><strong>96,096</strong><em>by customer_unique_id</em></div>
+        <div class="kpi"><small>AVG REVIEW SCORE</small><strong>4.09</strong><em>out of 5 stars</em></div>
+        <div class="kpi"><small>AVG DELIVERY</small><strong>12.1<i> days</i></strong><em>purchase → doorstep</em></div>
+        <div class="kpi hero-kpi"><small>LATE DELIVERY RATE</small><strong>8.1%</strong><em>past the promised date</em></div>
+      </div>
+    </section>
+
+    <section>
+      <span class="eyebrow">WHAT THE DATA SAID</span>
+      <h2>Four findings that<br />changed the story.</h2>
+      <div class="findings">
+        <article class="finding">
+          <span class="n mono">01</span>
+          <div>
+            <h3>Delivery time predicts satisfaction better than anything else</h3>
+            <p>
+              Orders delivered on time average <strong>4.29 stars</strong>. Orders that miss the promised
+              date average <strong>2.57</strong>. That 1.73-star gap is wider than the spread between
+              any two product categories — so the fastest route to a better review score is
+              logistics, not merchandising.
+            </p>
+            <span class="pull">Past 30 days in transit, the average review falls to 2.18 stars (4,032 orders)</span>
+          </div>
+        </article>
+        <article class="finding">
+          <span class="n mono">02</span>
+          <div>
+            <h3>A quarter of the catalogue earns 80% of the revenue</h3>
+            <p>
+              <strong>17 of 71 categories</strong> generate 80% of sales. Health &amp; beauty (9.4%),
+              watches &amp; gifts (9.0%) and bed/bath/table (7.7%) lead. A Pareto cumulative measure
+              on the Product Performance page makes that cut-off visible rather than assumed, so
+              range decisions have a line to point at.
+            </p>
+          </div>
+        </article>
+        <article class="finding">
+          <span class="n mono">03</span>
+          <div>
+            <h3>Revenue is geographically concentrated</h3>
+            <p>
+              São Paulo alone is <strong>38.3%</strong> of revenue; add Rio de Janeiro and Minas Gerais
+              and three of 27 states account for <strong>63.4%</strong>. Growth and delivery
+              performance therefore have to be read per state — a national average hides
+              both the opportunity and the risk.
+            </p>
+          </div>
+        </article>
+        <article class="finding">
+          <span class="n mono">04</span>
+          <div>
+            <h3>Almost nobody comes back</h3>
+            <p>
+              Only <strong>3.12%</strong> of 96,096 customers ever place a second order. This is
+              invisible unless the model counts people correctly — and it is the finding most
+              likely to be reported wrongly, for the reason in the next section.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <span class="eyebrow">THE PART THAT TAKES THE TIME</span>
+      <h2>Three modelling traps<br />in this dataset.</h2>
+      <p>
+        The analysis is only trustworthy because of what happens before the first chart.
+        Each of these silently produces a plausible-looking wrong answer.
+      </p>
+      <div class="traps">
+        <div class="trap">
+          <h3>Counting customers</h3>
+          <p>
+            <code>customer_id</code> is unique <em>per order</em>, not per person. Counting it makes
+            every customer look new and repeat-purchase analysis meaningless. The model counts
+            <code>customer_unique_id</code> instead — which is how the 3.12% repeat rate surfaced.
+          </p>
+        </div>
+        <div class="trap">
+          <h3>The geolocation table</h3>
+          <p>
+            <code>geolocation.csv</code> holds 1,000,163 rows, many per zip prefix. Related as-is it
+            creates a many-to-many join that quietly inflates every aggregate. It is de-duplicated
+            to one row per <code>geolocation_zip_code_prefix</code> before it becomes a lookup.
+          </p>
+        </div>
+        <div class="trap">
+          <h3>Encoding</h3>
+          <p>
+            <code>order_reviews.csv</code> is Portuguese. Under the default encoding the accents
+            mojibake and category and comment text become unusable. Every query loads with
+            <code>Encoding = 65001</code> (UTF-8).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <span class="eyebrow">HOW IT IS BUILT</span>
+      <h2>Model and measures.</h2>
+      <p>
+        A star schema with <strong>order_items</strong> as the fact table, and orders, customers,
+        products, sellers and reviews as dimensions. All shaping happens in Power Query so the
+        raw extract stays untouched and reproducible.
+      </p>
+      <table>
+        <thead>
+          <tr><th>REPORT PAGE</th><th>QUESTION IT ANSWERS</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Executive Summary</strong></td><td>How is the marketplace performing, and is the trend real or noise?</td></tr>
+          <tr><td><strong>Product Performance</strong></td><td>Which categories carry the revenue, and where does the long tail begin?</td></tr>
+          <tr><td><strong>Delivery &amp; Experience</strong></td><td>Where are we late, and what does it cost us in review score?</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:26px">Measures written in DAX:</p>
+      <div class="chips">
+        <span class="chip">Total Revenue</span><span class="chip">Total Orders</span>
+        <span class="chip">Avg Order Value</span><span class="chip">Unique Customers</span>
+        <span class="chip">Items Sold</span><span class="chip">Avg Review Score</span>
+        <span class="chip">Total Reviews</span><span class="chip">Avg Delivery Days</span>
+        <span class="chip">Late Delivery %</span><span class="chip">Freight Ratio %</span>
+        <span class="chip">Satisfaction Gap</span><span class="chip">Revenue 3M Rolling Avg</span>
+        <span class="chip">Pareto Cumulative %</span><span class="chip">Category Rank</span>
+        <span class="chip">Delivery Speed Bucket</span><span class="chip">Price Band</span>
+      </div>
+    </section>
+
+    <section>
+      <span class="eyebrow">THE REPORT</span>
+      <h2>Inside the dashboard.</h2>
+
+      <!--
+        SCREENSHOTS — how to add them
+        In Power BI Desktop open each page, then use Win + Shift + S to capture the canvas
+        (or File > Export > Export to PDF and crop). Save the PNGs into this folder as:
+            olist-executive-summary.png
+            olist-product-performance.png
+            olist-delivery-experience.png
+        Then in each figure below: delete the .shot-placeholder div and uncomment the <img>.
+      -->
+
+      <figure class="shot">
+        <!-- <img src="olist-executive-summary.png" alt="Executive Summary page of the Olist Power BI report" /> -->
+        <div class="shot-placeholder">
+          <b>Executive Summary</b>
+          <span>Revenue, orders, AOV, customers and review score as KPI cards, with a
+          revenue trend against a 3-month rolling average, revenue by state, and category ranking.</span>
+        </div>
+        <figcaption>PAGE 1 / EXECUTIVE SUMMARY</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <!-- <img src="olist-product-performance.png" alt="Product Performance page of the Olist Power BI report" /> -->
+        <div class="shot-placeholder">
+          <b>Product Performance</b>
+          <span>Category revenue with a Pareto cumulative line, a price-band matrix, and a
+          price-versus-review-score scatter that separates genuinely weak products from merely cheap ones.</span>
+        </div>
+        <figcaption>PAGE 2 / PRODUCT PERFORMANCE</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <!-- <img src="olist-delivery-experience.png" alt="Delivery and Experience page of the Olist Power BI report" /> -->
+        <div class="shot-placeholder">
+          <b>Delivery &amp; Experience</b>
+          <span>Average delivery days and late rate by state on a map, delivery-speed buckets
+          against average review score, and the headline: orders arriving after 30 days average 2.2 stars.</span>
+        </div>
+        <figcaption>PAGE 3 / DELIVERY &amp; EXPERIENCE</figcaption>
+      </figure>
+
+      <!--
+        LIVE EMBED (optional)
+        Power BI Service > open the report > File > Embed report > Publish to web (public),
+        then copy the src URL out of the iframe it generates, paste it below and uncomment.
+        The CSP in <head> already allows https://app.powerbi.com.
+        NOTE: "Publish to web" makes the report and its underlying data visible to anyone
+        on the internet. That is acceptable for this public dataset — never use it for
+        client, employer, or personal data.
+
+        <div style="position:relative;padding-top:56.25%;border:1px solid #d9dfdc;border-radius:8px;overflow:hidden;background:#fff">
+          <iframe title="Olist Retail Analytics" src="PASTE_PUBLISH_TO_WEB_URL_HERE"
+                  style="position:absolute;inset:0;width:100%;height:100%;border:0"
+                  allowfullscreen></iframe>
+        </div>
+      -->
+    </section>
+
+    <section>
+      <span class="eyebrow">BEING STRAIGHT ABOUT IT</span>
+      <h2>Scope and honesty.</h2>
+      <div class="callout">
+        <h3>What this is, and what it isn't</h3>
+        <p>
+          This is a self-directed project on the <strong>Brazilian E-Commerce Public Dataset by Olist</strong>
+          (Olist &amp; André Sionek, published on Kaggle under CC BY-NC-SA 4.0). It is not client work,
+          and no business acted on it — so there is no "we saved X" claim attached to it.
+        </p>
+        <p>
+          What it does show is the work itself: choosing a grain, catching the joins that would have
+          produced confident nonsense, writing measures that answer a decision rather than fill a canvas,
+          and landing on a finding specific enough to argue with.
+        </p>
+        <p>
+          Known limits — 2016 is sparse, so trends are read from Jan 2017; item price and payment value
+          differ slightly because of vouchers and instalment rounding; and delivery metrics only
+          include orders with a recorded delivery date.
+        </p>
+      </div>
+      <div class="next">
+        <a class="btn btn-primary" href="../index.html#contact">Talk about a similar project <span>↗</span></a>
+        <a class="btn btn-ghost" href="../index.html#work">See other work <span>↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="mono">DATA WITH INTENTION © 2025</span>
+    <span class="mono">OLIST RETAIL ANALYTICS / POWER BI CASE STUDY</span>
+    <a class="mono" href="../index.html">BACK TO PORTFOLIO ↑</a>
+  </footer>
+</body>
+</html>
