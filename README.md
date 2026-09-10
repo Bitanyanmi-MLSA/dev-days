@@ -5,6 +5,7 @@ My data analyst portfolio, plus a growing collection of small web projects.
 **Live site:** https://bitanyanmi-mlsa.github.io/dev-days/
 
 - **Landing page** → the portfolio (`index.html`)
+- **Notes / blog** → `blog/`, reachable from the nav and the footer
 - **Projects gallery** → `projects.html`, reachable from the nav, the "Explore projects" banner, and the footer
 
 ## Layout
@@ -15,15 +16,19 @@ My data analyst portfolio, plus a growing collection of small web projects.
 ├── style.css           # Portfolio styles
 ├── app.js              # Portfolio behaviour (filters, modals, contact form)
 ├── projects.html       # Gallery of all side projects
+├── blog/               # Notes — short technical write-ups
+│   └── index.html      # Post list
 ├── case-studies/       # Long-form analytics case studies
-│   └── olist-retail-analytics.html
+│   ├── olist-retail-analytics.html
+│   └── ghana-regional-sales.html
 ├── projects/
 │   └── 01-dream-career-explorer/
 ├── shared/
 │   ├── assets/         # Shared images (Passport.jpg)
-│   └── snippets/
+│   └── snippets/       # Reusable DAX (dax/) and Power Query (power-query/)
 ├── .nojekyll           # Serve files as-is on GitHub Pages
 ├── CONTACT-FORM.md     # Contact form setup & troubleshooting
+├── CONTRIBUTION-LOG.md # Dated record of talks, posts, answers and reach
 ├── VISITOR-COUNTER.md  # How the visit counter works & how to read it
 └── README.md
 ```
@@ -53,11 +58,45 @@ Case studies are the data work — separate from the web builds in `projects/`.
 | Project | Page | Source data | Status |
 |---|---|---|---|
 | Olist Retail Analytics | [`case-studies/olist-retail-analytics.html`](case-studies/olist-retail-analytics.html) | Olist public dataset (Kaggle, CC BY-NC-SA 4.0) | Published — screenshots pending |
-| Ghana Regional Sales | — (modal only) | Private extract | Analysis complete, page not written |
+| Ghana Regional Sales | [`case-studies/ghana-regional-sales.html`](case-studies/ghana-regional-sales.html) | Private extract | Published — QA screenshot pending (mask region labels first) |
 
 > The `.pbix` files and their source CSVs are **not** kept in this repo — they are hundreds of
 > megabytes and GitHub Pages cannot render them. The case-study pages carry the findings,
 > screenshots, and (optionally) a Power BI "Publish to web" embed instead.
+>
+> "Publish to web" makes a report and its data public to anyone with the link. It is fine for
+> the public Olist dataset and must never be used for the private Ghana extract.
+
+## Adding a note (blog post)
+
+Notes are short technical write-ups — the "learn from me" half of the site, kept separate from
+the long-form case studies.
+
+1. Copy an existing file in `blog/` and rename it to a short slug, no date in the filename.
+2. Update the `<title>`, the meta description, the date, the reading time and the body.
+3. Add a matching `<a class="post">` block at the **top** of the list in `blog/index.html`.
+4. Post pages carry no JavaScript — leave `script-src 'none'` in the CSP as it is.
+5. Publish the code you reference into `shared/snippets/` and link to it.
+6. Log the post in [`CONTRIBUTION-LOG.md`](CONTRIBUTION-LOG.md) the same day.
+
+## Notes
+
+| Note | Page |
+|---|---|
+| Appending two extracts is a decision, not a step | [`blog/appending-two-extracts-is-a-decision.html`](blog/appending-two-extracts-is-a-decision.html) |
+| Three joins that quietly break a Power BI model | [`blog/three-joins-that-break-a-power-bi-model.html`](blog/three-joins-that-break-a-power-bi-model.html) |
+
+## Snippets
+
+`shared/snippets/` holds the reusable DAX (`dax/`) and Power Query (`power-query/`) lifted out
+of the case studies, documented in [`shared/snippets/README.md`](shared/snippets/README.md).
+The notes and case studies link to these files by path, so keep the paths stable when renaming.
+
+## Contribution log
+
+[`CONTRIBUTION-LOG.md`](CONTRIBUTION-LOG.md) is a dated record of public contributions — talks,
+posts, forum answers, tools — with the reach figure and an evidence link for each. It is filled
+in the day something happens, because reach numbers and event pages do not stay put.
 
 ## Projects
 
@@ -109,8 +148,10 @@ Static sites with no backend, so the attack surface is small. Hardening applied:
 - **Referrer policy** set to `strict-origin-when-cross-origin`.
 - **`base-uri 'none'`** and **`object-src 'none'`** to block base-tag hijacking and plugin embedding.
 - **`form-action`** restricted to the form endpoint (`'none'` on pages with no forms).
-- **`frame-src`** on case-study pages allows only `https://app.powerbi.com`, for optional
-  Power BI "Publish to web" embeds. No other origin may be framed.
+- **`frame-src`** on the Olist case-study page allows only `https://app.powerbi.com`, for an
+  optional Power BI "Publish to web" embed. No other origin may be framed. Pages that will
+  never carry an embed — including the Ghana case study, which uses private data — omit
+  `frame-src` entirely and fall back to `default-src 'self'`.
 - Contact form uses a honeypot field plus the provider's captcha to limit spam.
 - HTTPS enforced; plain HTTP redirects with a 301.
 - No secrets, tokens, or credentials are stored in the repository.

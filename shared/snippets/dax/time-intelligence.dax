@@ -1,0 +1,44 @@
+// ---------------------------------------------------------------------------
+// Time intelligence — the four measures a report actually needs
+// ---------------------------------------------------------------------------
+// All of these require a proper date table that is marked as a date table and
+// related to the fact table. See date-table.dax.
+//
+// DIVIDE, not "/" — it returns BLANK() instead of an error when the
+// denominator is zero or missing, which is what you want in a visual.
+// ---------------------------------------------------------------------------
+
+Total Revenue = SUM ( Sales[Amount] )
+
+// ---------------------------------------------------------------------------
+
+Revenue LY =
+CALCULATE ( [Total Revenue], DATEADD ( 'Date'[Date], -1, YEAR ) )
+
+// ---------------------------------------------------------------------------
+
+Revenue YoY % =
+DIVIDE ( [Total Revenue] - [Revenue LY], [Revenue LY] )
+
+// ---------------------------------------------------------------------------
+// A rolling average smooths a noisy trend without hiding it. Averaging the
+// months in the window (not the days) keeps short months honest.
+
+Revenue 3M Rolling Avg =
+CALCULATE (
+    AVERAGEX ( VALUES ( 'Date'[Year Month] ), [Total Revenue] ),
+    DATESINPERIOD ( 'Date'[Date], MAX ( 'Date'[Date] ), -3, MONTH )
+)
+
+// ---------------------------------------------------------------------------
+// Year to date, stopping at the last date with data so the current partial
+// period does not fall off a cliff in the visual.
+
+Revenue YTD =
+VAR LastDateWithData = CALCULATE ( MAX ( Sales[OrderDate] ), REMOVEFILTERS ( ) )
+RETURN
+    CALCULATE (
+        [Total Revenue],
+        DATESYTD ( 'Date'[Date] ),
+        'Date'[Date] <= LastDateWithData
+    )

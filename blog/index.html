@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Notes on semantic modelling and data quality in Power BI and Microsoft Fabric — written by Bitanyanmi from real work, with the code included." />
+  <title>Notes | Bitanyanmi</title>
+  <link rel="icon" href="../shared/assets/Passport.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{--ink:#0d1d2a;--navy:#102d3b;--teal:#52d6c4;--cream:#f5f2ec;--orange:#ff8f5c;--muted:#65727a;--line:#d9dfdc}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:Manrope,sans-serif}
+    .mono{font-family:"DM Mono",monospace;letter-spacing:1px}
+
+    header{padding:80px 8vw 58px;background:var(--navy);color:#fff}
+    .backlink{display:inline-flex;align-items:center;gap:9px;color:var(--teal);text-decoration:none;font-size:11px;font-weight:800;margin-bottom:30px}
+    .backlink:hover{color:#fff}
+    .kicker{font-size:10px;letter-spacing:1.5px;color:var(--orange)}
+    h1{font-size:clamp(42px,6vw,72px);line-height:1.02;letter-spacing:-3px;margin:22px 0 20px}
+    h1 span{color:var(--teal)}
+    header p{max-width:520px;color:#bccbd0;line-height:1.75;font-size:15px;margin:0}
+    header p b{color:#fff;font-weight:700}
+    .beat{display:flex;flex-wrap:wrap;gap:34px;margin-top:44px;padding-top:26px;border-top:1px solid #2d5261}
+    .beat div small{display:block;font:9px "DM Mono";letter-spacing:1px;color:#7f989f;margin-bottom:8px}
+    .beat div strong{font-size:13px;font-weight:700}
+
+    main{padding:70px 8vw 90px}
+    .eyebrow{font:10px "DM Mono";letter-spacing:1.5px;color:var(--orange);display:block;margin-bottom:16px}
+    h2{font-size:clamp(26px,3.2vw,38px);letter-spacing:-1.6px;line-height:1.1;margin:0 0 30px}
+
+    .posts{display:grid;gap:2px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+    .post{display:block;background:#fff;padding:32px 34px;text-decoration:none;color:var(--ink);transition:.2s}
+    .post:hover{background:#fbfaf6}
+    .post-meta{display:flex;flex-wrap:wrap;gap:14px;font:9px "DM Mono";letter-spacing:1px;color:var(--muted)}
+    .post-meta .cat{color:var(--orange)}
+    .post h3{font-size:clamp(21px,2.4vw,27px);letter-spacing:-1.2px;line-height:1.2;margin:14px 0 10px;max-width:24ch}
+    .post p{color:var(--muted);font-size:13.5px;line-height:1.75;margin:0;max-width:66ch}
+    .post .go{display:inline-block;margin-top:18px;font-size:11px;font-weight:800;color:var(--orange)}
+
+    .side{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:22px}
+    .tile{background:#fff;border:1px solid var(--line);border-radius:8px;padding:26px 28px;text-decoration:none;color:var(--ink);transition:.2s}
+    .tile:hover{border-color:#bfd6d0;transform:translateY(-3px);box-shadow:0 16px 32px #0d1d2a10}
+    .tile small{display:block;font:9px "DM Mono";letter-spacing:1px;color:var(--orange);margin-bottom:12px}
+    .tile strong{display:block;font-size:17px;letter-spacing:-.6px;margin-bottom:8px}
+    .tile span{display:block;color:var(--muted);font-size:12.5px;line-height:1.7}
+    .tile.plain{border-style:dashed;background:transparent}
+    .tile.plain:hover{transform:none;box-shadow:none;border-color:#c3cdc9}
+
+    footer{padding:26px 8vw;background:var(--ink);color:#8ba1a6;font-size:9px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    footer a{color:#8ba1a6;text-decoration:none}
+    footer a:hover{color:#fff}
+
+    @media(max-width:720px){
+      header{padding:58px 7vw 44px}
+      main{padding:52px 7vw 70px}
+      .post{padding:26px 22px}
+      footer{padding:24px 7vw}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="backlink" href="../index.html">← Back to portfolio</a>
+    <span class="kicker mono">NOTES / POWER BI &amp; FABRIC</span>
+    <h1>Working notes on<br /><span>getting the model right.</span></h1>
+    <p>
+      Short, specific write-ups about semantic modelling and data quality — the part of Power BI
+      and Fabric that decides whether a dashboard is true. <b>Everything here comes out of work I
+      actually did, and the code comes with it.</b>
+    </p>
+    <div class="beat">
+      <div><small>WHAT I WRITE ABOUT</small><strong>Semantic modelling · data quality</strong></div>
+      <div><small>CADENCE</small><strong>A new note most weeks</strong></div>
+      <div><small>CODE</small><strong>Every snippet is in the repo</strong></div>
+    </div>
+  </header>
+
+  <main>
+    <span class="eyebrow">LATEST</span>
+    <h2>Notes.</h2>
+
+    <!--
+      ADDING A POST
+      1. Copy an existing post file in this folder and rename it to a short slug,
+         e.g. blog/measures-that-answer-a-decision.html
+      2. Update <title>, the meta description, the date, the reading time and the body.
+      3. Add a matching <a class="post"> block at the TOP of the list below — newest first.
+      4. Keep the CSP in <head> as it is: these pages carry no JavaScript.
+    -->
+
+    <div class="posts">
+      <a class="post" href="appending-two-extracts-is-a-decision.html">
+        <span class="post-meta"><span class="cat">POWER QUERY</span><span>10 SEPTEMBER 2026</span><span>6 MIN READ</span></span>
+        <h3>Appending two extracts is a decision, not a step</h3>
+        <p>
+          Two files with the same columns are not automatically two halves of one table. Here is the
+          check that catches an overlap in seconds, and the M function that replaces restated rows
+          instead of stacking them — the pattern behind a 33% error I nearly published.
+        </p>
+        <span class="go">Read the note ↗</span>
+      </a>
+      <a class="post" href="three-joins-that-break-a-power-bi-model.html">
+        <span class="post-meta"><span class="cat">MODELLING</span><span>10 SEPTEMBER 2026</span><span>7 MIN READ</span></span>
+        <h3>Three joins that quietly break a Power BI model</h3>
+        <p>
+          None of them throws an error. Each one produces a number that looks reasonable enough to
+          put in front of a leadership team — a wrong customer count, a lookup table that inflates
+          every total, and text keys that never match. With the fixes, in DAX and M.
+        </p>
+        <span class="go">Read the note ↗</span>
+      </a>
+    </div>
+
+    <div class="side">
+      <a class="tile" href="https://github.com/Bitanyanmi-MLSA/dev-days/tree/main/shared/snippets">
+        <small>REUSABLE CODE</small>
+        <strong>The snippets folder</strong>
+        <span>Date table, Pareto cumulative, safe division, UTF-8 CSV loading, restated-row
+        replacement — DAX and M you can paste straight into a model.</span>
+      </a>
+      <a class="tile" href="../case-studies/olist-retail-analytics.html">
+        <small>CASE STUDY</small>
+        <strong>Where these notes come from</strong>
+        <span>100,000 marketplace orders modelled end to end, and a private regional
+        reconciliation that changed a total by a third.</span>
+      </a>
+      <div class="tile plain">
+        <small>NEXT UP</small>
+        <strong>Writing in progress</strong>
+        <span>Measures that answer a decision instead of filling a canvas — and what changes when
+        the same model moves into Fabric.</span>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span class="mono">DATA WITH INTENTION © 2025</span>
+    <span class="mono">NOTES / POWER BI &amp; FABRIC</span>
+    <a class="mono" href="../index.html">BACK TO PORTFOLIO ↑</a>
+  </footer>
+</body>
+</html>
