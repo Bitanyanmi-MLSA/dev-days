@@ -1,0 +1,29 @@
+// ---------------------------------------------------------------------------
+// Customer grain — count the person, not the transaction record
+// ---------------------------------------------------------------------------
+// Many source systems issue a new "customer" ID per order. Counting it makes
+// every customer look new and quietly kills any retention analysis.
+// Always confirm whether an ID is unique per EVENT or per ENTITY before
+// counting it. In the Olist dataset, customer_id is per order and
+// customer_unique_id is per person.
+//
+// See: /blog/three-joins-that-break-a-power-bi-model.html
+// ---------------------------------------------------------------------------
+
+Unique Customers = DISTINCTCOUNT ( customers[customer_unique_id] )
+
+// ---------------------------------------------------------------------------
+
+Repeat Customers =
+VAR OrdersPerCustomer =
+    ADDCOLUMNS (
+        VALUES ( customers[customer_unique_id] ),
+        "@Orders", CALCULATE ( DISTINCTCOUNT ( orders[order_id] ) )
+    )
+RETURN
+    COUNTROWS ( FILTER ( OrdersPerCustomer, [@Orders] > 1 ) )
+
+// ---------------------------------------------------------------------------
+
+Repeat Customer % =
+DIVIDE ( [Repeat Customers], [Unique Customers] )

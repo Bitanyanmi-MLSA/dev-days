@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Three joins that break a Power BI model without throwing an error — the wrong customer key, an un-deduplicated lookup, and text keys that never match. With the DAX and M fixes." />
+  <title>Three joins that quietly break a Power BI model | Bitanyanmi</title>
+  <link rel="icon" href="../shared/assets/Passport.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{--ink:#0d1d2a;--navy:#102d3b;--teal:#52d6c4;--cream:#f5f2ec;--orange:#ff8f5c;--muted:#65727a;--line:#d9dfdc;--green:#0b6e4f}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:Manrope,sans-serif}
+    .mono{font-family:"DM Mono",monospace;letter-spacing:1px}
+    code{font-family:"DM Mono",monospace;font-size:12px;background:#f0efe9;padding:1px 5px;border-radius:3px;color:var(--ink)}
+
+    header{padding:80px 8vw 56px;background:var(--navy);color:#fff}
+    .backlink{display:inline-flex;align-items:center;gap:9px;color:var(--teal);text-decoration:none;font-size:11px;font-weight:800;margin-bottom:30px}
+    .backlink:hover{color:#fff}
+    .post-meta{display:flex;flex-wrap:wrap;gap:16px;font:9px "DM Mono";letter-spacing:1.5px;color:#7f989f}
+    .post-meta .cat{color:var(--orange)}
+    h1{font-size:clamp(34px,5vw,60px);line-height:1.05;letter-spacing:-2.6px;margin:20px 0 22px;max-width:18ch}
+    h1 span{color:var(--teal)}
+    .standfirst{max-width:560px;color:#bccbd0;line-height:1.75;font-size:15px;margin:0}
+    .standfirst b{color:#fff;font-weight:700}
+
+    main{padding:0 8vw 80px;max-width:1100px}
+    section{padding:56px 0;border-bottom:1px solid var(--line)}
+    section:last-of-type{border-bottom:0}
+    .eyebrow{font:10px "DM Mono";letter-spacing:1.5px;color:var(--orange);display:block;margin-bottom:14px}
+    h2{font-size:clamp(24px,3vw,34px);letter-spacing:-1.4px;line-height:1.12;margin:0 0 20px;max-width:22ch}
+    h3{font-size:16px;letter-spacing:-.5px;margin:26px 0 9px}
+    p{color:var(--muted);font-size:14px;line-height:1.85;max-width:68ch;margin:0 0 16px}
+    p strong{color:var(--ink)}
+    ul{color:var(--muted);font-size:14px;line-height:1.85;max-width:68ch;padding-left:20px;margin:0 0 16px}
+    li{margin-bottom:8px}
+    li strong{color:var(--ink)}
+    a{color:var(--ink)}
+
+    pre{background:var(--ink);color:#dfe9ea;border-radius:8px;padding:22px 24px;overflow-x:auto;font-family:"DM Mono",monospace;font-size:12.5px;line-height:1.75;margin:0 0 16px;max-width:74ch}
+    pre .cmt{color:#7f989f}
+    figcaption{font:9px "DM Mono";letter-spacing:1px;color:var(--muted);margin:-6px 0 26px}
+
+    .pull{display:block;margin:22px 0;padding:16px 20px;background:#eef6f3;border-left:3px solid var(--green);font:12px "DM Mono";color:var(--green);line-height:1.7;max-width:68ch}
+    .callout{background:var(--ink);color:#fff;border-radius:8px;padding:30px 32px;margin-top:16px}
+    .callout h3{color:var(--teal);font-size:15px;margin-top:0}
+    .callout p{color:#a9bdc2;font-size:13px;margin:0;max-width:72ch}
+    .callout p+p{margin-top:12px}
+    .callout a{color:var(--teal)}
+
+    .next{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+    .btn{display:inline-flex;align-items:center;gap:16px;border-radius:4px;padding:15px 22px;font-size:11px;font-weight:800;text-decoration:none;transition:.2s}
+    .btn:hover{transform:translateY(-2px)}
+    .btn-primary{background:var(--ink);color:#fff}
+    .btn-ghost{border:1px solid var(--ink);color:var(--ink)}
+
+    footer{padding:26px 8vw;background:var(--ink);color:#8ba1a6;font-size:9px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    footer a{color:#8ba1a6;text-decoration:none}
+    footer a:hover{color:#fff}
+
+    @media(max-width:720px){
+      header{padding:56px 7vw 42px}
+      main{padding:0 7vw 64px}
+      section{padding:44px 0}
+      pre{font-size:11.5px;padding:18px}
+      footer{padding:24px 7vw}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="backlink" href="./">← All notes</a>
+    <span class="post-meta"><span class="cat">MODELLING</span><span>10 SEPTEMBER 2026</span><span>7 MIN READ</span></span>
+    <h1>Three joins that quietly <span>break a model.</span></h1>
+    <p class="standfirst">
+      None of these throws an error. Each one produces a number that is wrong by enough to matter
+      and right-looking enough to present. <b>All three came out of the same 100,000-row dataset,
+      and all three are one line to fix once you know to look.</b>
+    </p>
+  </header>
+
+  <main>
+    <section>
+      <span class="eyebrow">THE PATTERN</span>
+      <h2>Broken models don't fail loudly.</h2>
+      <p>
+        A model that is genuinely broken usually tells you: a blank visual, a circular dependency,
+        a relationship Power BI refuses to create. The dangerous ones are quieter. The report loads,
+        the totals are the right order of magnitude, and the story it tells is confident and wrong.
+      </p>
+      <p>
+        These three are the ones I check first in any new model, in this order. The examples come
+        from the <a href="../case-studies/olist-retail-analytics.html">Olist marketplace model</a>,
+        but nothing about them is specific to that dataset.
+      </p>
+    </section>
+
+    <section>
+      <span class="eyebrow">JOIN ONE</span>
+      <h2>The key that isn't the thing you're counting.</h2>
+      <p>
+        Every customer table has an ID. That does not mean it identifies a customer. In the Olist
+        data, <code>customer_id</code> is unique <strong>per order</strong> — a new one is issued
+        every time somebody buys. There is a second column, <code>customer_unique_id</code>, which
+        identifies the person.
+      </p>
+      <p>
+        Count the first one and your report says every customer is new, repeat purchase is zero,
+        and retention is not worth measuring. It is a coherent, self-consistent, completely
+        fictional story. Counting the second one, only <strong>3.12%</strong> of customers in that
+        dataset ever come back — a finding worth an entire meeting.
+      </p>
+      <h3>The fix</h3>
+      <pre><span class="cmt">-- Count the person, not the transaction record</span>
+Unique Customers = DISTINCTCOUNT ( customers[customer_unique_id] )
+
+<span class="cmt">-- And once the grain is right, this becomes possible</span>
+Repeat Customers =
+VAR OrdersPerCustomer =
+    ADDCOLUMNS (
+        VALUES ( customers[customer_unique_id] ),
+        "@Orders", CALCULATE ( DISTINCTCOUNT ( orders[order_id] ) )
+    )
+RETURN
+    COUNTROWS ( FILTER ( OrdersPerCustomer, [@Orders] > 1 ) )</pre>
+      <figcaption>DAX / shared/snippets/dax/customer-grain.dax</figcaption>
+      <span class="pull">Ask of every ID column: is this unique per event, or per entity? The column name will not tell you.</span>
+    </section>
+
+    <section>
+      <span class="eyebrow">JOIN TWO</span>
+      <h2>The lookup table that isn't a lookup table.</h2>
+      <p>
+        A dimension has to have one row per key. Geography tables almost never arrive that way.
+        The Olist geolocation file holds <strong>1,000,163 rows</strong> for a few thousand zip
+        prefixes — one per recorded coordinate. Relate it as-is and Power BI cannot make a
+        one-to-many relationship, so you end up with a many-to-many, and every measure filtered
+        through it is silently multiplied by however many rows that key happens to have.
+      </p>
+      <p>
+        The tell is that your revenue goes <em>up</em> when you add a geography slicer. Totals that
+        change when you add a filter are the loudest quiet symptom in the business.
+      </p>
+      <h3>The fix</h3>
+      <pre><span class="cmt">// One row per key, before it is allowed to be a dimension</span>
+let
+    Source   = Csv.Document(
+                   File.Contents( "C:\data\geolocation.csv" ),
+                   [ Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv ]
+               ),
+    Headers  = Table.PromoteHeaders( Source, [ PromoteAllScalars = true ] ),
+    Typed    = Table.TransformColumnTypes( Headers, {
+                   { "geolocation_zip_code_prefix", Int64.Type },
+                   { "geolocation_city",  type text },
+                   { "geolocation_state", type text }
+               } ),
+    OnePerZip = Table.Distinct( Typed, { "geolocation_zip_code_prefix" } )
+in
+    OnePerZip</pre>
+      <figcaption>Power Query (M) / shared/snippets/power-query/one-row-per-key.pq</figcaption>
+      <p>
+        <code>Table.Distinct</code> with a column list keeps the first row per key. If which row you
+        keep actually matters — a city name, a region owner, a price — group by the key and pick
+        deliberately instead of accepting whatever arrived first.
+      </p>
+    </section>
+
+    <section>
+      <span class="eyebrow">JOIN THREE</span>
+      <h2>Keys that look identical and are not.</h2>
+      <p>
+        The relationship exists, the arrow is drawn, and half your fact rows land in a blank row you
+        never see unless you go looking. Text keys fail to match for three boring reasons:
+      </p>
+      <ul>
+        <li><strong>Encoding.</strong> The Olist review and category files are Portuguese. Loaded
+          under the default encoding, the accented characters mojibake — <code>ção</code> becomes
+          something that will never equal <code>ção</code> again. Every query loads with
+          <code>Encoding = 65001</code> (UTF-8).</li>
+        <li><strong>Whitespace.</strong> A trailing space is invisible in the preview pane and fatal
+          in a join. <code>Text.Trim</code> and <code>Text.Clean</code> on every text key, always.</li>
+        <li><strong>Case and type.</strong> Power Query is case sensitive where the data model is not,
+          and a number stored as text will not match the same number stored as a number. Normalise
+          the key on both sides of the join, in the query, before the relationship is created.</li>
+      </ul>
+      <h3>The fix</h3>
+      <pre><span class="cmt">// Normalise a text key on both sides of every join</span>
+Table.TransformColumns( PreviousStep, {
+    { "region_key", each Text.Upper( Text.Trim( Text.Clean( _ ) ) ), type text }
+} )</pre>
+      <figcaption>Power Query (M) / shared/snippets/power-query/normalise-text-key.pq</figcaption>
+      <p>
+        Then confirm it worked instead of assuming: in the model view, the row count of the fact
+        table filtered by the dimension should equal its unfiltered row count. If it doesn't, some
+        rows are landing nowhere.
+      </p>
+    </section>
+
+    <section>
+      <span class="eyebrow">THE HABIT</span>
+      <h2>Ten minutes, before the first chart.</h2>
+      <p>
+        This is the whole check, and it costs less than the meeting where somebody asks why the
+        number moved:
+      </p>
+      <ul>
+        <li>For every ID column you count: <strong>per event or per entity?</strong></li>
+        <li>For every dimension: <strong>row count equals distinct key count?</strong></li>
+        <li>For every relationship: <strong>does any fact row land in the blank?</strong></li>
+        <li>For every total: <strong>does it change when you add a filter that shouldn't change it?</strong></li>
+      </ul>
+      <div class="callout">
+        <h3>The code is in the repo</h3>
+        <p>
+          Every snippet in this note lives in
+          <a href="https://github.com/Bitanyanmi-MLSA/dev-days/tree/main/shared/snippets">shared/snippets</a>
+          — DAX in <code>dax/</code>, M in <code>power-query/</code>. Copy them, change the column
+          names, keep the checks.
+        </p>
+        <p>
+          If one of these catches something in a model you're working on, I'd genuinely like to
+          hear which one.
+        </p>
+      </div>
+      <div class="next">
+        <a class="btn btn-primary" href="../case-studies/olist-retail-analytics.html">Read the full case study <span>↗</span></a>
+        <a class="btn btn-ghost" href="./">More notes <span>↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="mono">DATA WITH INTENTION © 2025</span>
+    <span class="mono">NOTE / THREE JOINS THAT BREAK A MODEL</span>
+    <a class="mono" href="../index.html">BACK TO PORTFOLIO ↑</a>
+  </footer>
+</body>
+</html>

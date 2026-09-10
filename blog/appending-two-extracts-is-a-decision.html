@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Appending two extracts in Power Query is a claim that they are disjoint. The check that catches an overlap in seconds, and the M function that replaces restated rows instead of stacking them." />
+  <title>Appending two extracts is a decision, not a step | Bitanyanmi</title>
+  <link rel="icon" href="../shared/assets/Passport.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{--ink:#0d1d2a;--navy:#102d3b;--teal:#52d6c4;--cream:#f5f2ec;--orange:#ff8f5c;--muted:#65727a;--line:#d9dfdc;--green:#0b6e4f}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:Manrope,sans-serif}
+    .mono{font-family:"DM Mono",monospace;letter-spacing:1px}
+    code{font-family:"DM Mono",monospace;font-size:12px;background:#f0efe9;padding:1px 5px;border-radius:3px;color:var(--ink)}
+
+    header{padding:80px 8vw 56px;background:var(--navy);color:#fff}
+    .backlink{display:inline-flex;align-items:center;gap:9px;color:var(--teal);text-decoration:none;font-size:11px;font-weight:800;margin-bottom:30px}
+    .backlink:hover{color:#fff}
+    .post-meta{display:flex;flex-wrap:wrap;gap:16px;font:9px "DM Mono";letter-spacing:1.5px;color:#7f989f}
+    .post-meta .cat{color:var(--orange)}
+    h1{font-size:clamp(34px,5vw,60px);line-height:1.05;letter-spacing:-2.6px;margin:20px 0 22px;max-width:18ch}
+    h1 span{color:var(--teal)}
+    .standfirst{max-width:560px;color:#bccbd0;line-height:1.75;font-size:15px;margin:0}
+    .standfirst b{color:#fff;font-weight:700}
+
+    main{padding:0 8vw 80px;max-width:1100px}
+    section{padding:56px 0;border-bottom:1px solid var(--line)}
+    section:last-of-type{border-bottom:0}
+    .eyebrow{font:10px "DM Mono";letter-spacing:1.5px;color:var(--orange);display:block;margin-bottom:14px}
+    h2{font-size:clamp(24px,3vw,34px);letter-spacing:-1.4px;line-height:1.12;margin:0 0 20px;max-width:22ch}
+    h3{font-size:16px;letter-spacing:-.5px;margin:26px 0 9px}
+    p{color:var(--muted);font-size:14px;line-height:1.85;max-width:68ch;margin:0 0 16px}
+    p strong{color:var(--ink)}
+    ul,ol{color:var(--muted);font-size:14px;line-height:1.85;max-width:68ch;padding-left:20px;margin:0 0 16px}
+    li{margin-bottom:8px}
+    li strong{color:var(--ink)}
+    a{color:var(--ink)}
+
+    pre{background:var(--ink);color:#dfe9ea;border-radius:8px;padding:22px 24px;overflow-x:auto;font-family:"DM Mono",monospace;font-size:12.5px;line-height:1.75;margin:0 0 16px;max-width:74ch}
+    pre .cmt{color:#7f989f}
+    figcaption{font:9px "DM Mono";letter-spacing:1px;color:var(--muted);margin:-6px 0 26px}
+
+    .pull{display:block;margin:22px 0;padding:16px 20px;background:#eef6f3;border-left:3px solid var(--green);font:12px "DM Mono";color:var(--green);line-height:1.7;max-width:68ch}
+    .callout{background:var(--ink);color:#fff;border-radius:8px;padding:30px 32px;margin-top:16px}
+    .callout h3{color:var(--teal);font-size:15px;margin-top:0}
+    .callout p{color:#a9bdc2;font-size:13px;margin:0;max-width:72ch}
+    .callout p+p{margin-top:12px}
+    .callout a{color:var(--teal)}
+
+    .next{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+    .btn{display:inline-flex;align-items:center;gap:16px;border-radius:4px;padding:15px 22px;font-size:11px;font-weight:800;text-decoration:none;transition:.2s}
+    .btn:hover{transform:translateY(-2px)}
+    .btn-primary{background:var(--ink);color:#fff}
+    .btn-ghost{border:1px solid var(--ink);color:var(--ink)}
+
+    footer{padding:26px 8vw;background:var(--ink);color:#8ba1a6;font-size:9px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    footer a{color:#8ba1a6;text-decoration:none}
+    footer a:hover{color:#fff}
+
+    @media(max-width:720px){
+      header{padding:56px 7vw 42px}
+      main{padding:0 7vw 64px}
+      section{padding:44px 0}
+      pre{font-size:11.5px;padding:18px}
+      footer{padding:24px 7vw}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="backlink" href="./">← All notes</a>
+    <span class="post-meta"><span class="cat">POWER QUERY</span><span>10 SEPTEMBER 2026</span><span>6 MIN READ</span></span>
+    <h1>Appending two files is a <span>decision.</span></h1>
+    <p class="standfirst">
+      Two extracts with the same columns are not automatically two halves of one table. Stacking
+      them is a claim that they share no rows — and when that claim is wrong, nothing warns you.
+      <b>It cost me a total that was 33% too high, and it took one query to catch.</b>
+    </p>
+  </header>
+
+  <main>
+    <section>
+      <span class="eyebrow">WHAT HAPPENED</span>
+      <h2>Same columns, same shape, different truth.</h2>
+      <p>
+        Two regional sales extracts, days apart, identical headers. Four regions appeared in both
+        files with <strong>different values</strong>, because the second file restated them after a
+        correction upstream. Nothing in either file said so — no version column, no run date, no
+        note.
+      </p>
+      <p>
+        Appended, those four regions were counted twice: once at the old value, once at the
+        corrected one. The result was in the right order of magnitude and looked like a good
+        quarter. It was <strong>GHS 725,600 too high — 33%</strong>. The full write-up is in the
+        <a href="../case-studies/ghana-regional-sales.html">Ghana Regional Sales case study</a>;
+        this note is the reusable part.
+      </p>
+      <span class="pull">Append means "these two sets are disjoint". If you have not tested that, you have assumed it.</span>
+    </section>
+
+    <section>
+      <span class="eyebrow">CHECK ONE</span>
+      <h2>Row count against distinct keys.</h2>
+      <p>
+        This is the cheapest data-quality test there is, and it catches duplication that
+        <em>Remove Duplicates</em> never will — because restated rows are not identical rows. Define
+        the business key, then compare.
+      </p>
+      <pre><span class="cmt">// QA_KeyCheck — run it on each source AND on the combined table</span>
+let
+    KeyCols      = { "Region", "Period" },
+    RowCount     = Table.RowCount( Sales ),
+    DistinctKeys = Table.RowCount( Table.Distinct( Table.SelectColumns( Sales, KeyCols ) ) ),
+    Result       = [
+                       rows          = RowCount,
+                       distinct_keys = DistinctKeys,
+                       duplicates    = RowCount - DistinctKeys
+                   ]
+in
+    Result</pre>
+      <figcaption>Power Query (M) / shared/snippets/power-query/qa-key-check.pq</figcaption>
+      <p>
+        Each file passed on its own. The append did not. That single number located the problem
+        before a measure had been written — which is the point: <strong>find it in the query,
+        not in the meeting.</strong>
+      </p>
+    </section>
+
+    <section>
+      <span class="eyebrow">CHECK TWO</span>
+      <h2>Name the overlap out loud.</h2>
+      <p>
+        Knowing that duplicates exist is not the same as knowing what they are. An inner merge on
+        the key returns exactly the rows that live in both files; anti-joins in each direction
+        return what is unique to each. Keep the overlap query in the file as a visible audit step
+        rather than deleting it once you have looked.
+      </p>
+      <pre><span class="cmt">// The rows both files claim — four regions, at two different values</span>
+Overlap =
+    Table.NestedJoin(
+        Sales_V1, { "Region", "Period" },
+        Sales_V2, { "Region", "Period" },
+        "v2", JoinKind.Inner
+    )</pre>
+      <figcaption>Power Query (M)</figcaption>
+      <p>
+        Now the question is answerable by a human: are these <strong>restatements</strong> (one
+        version supersedes the other) or <strong>partial loads</strong> (both are incomplete and
+        should be summed)? The data cannot tell you. The person who produced the files can, and
+        that conversation is the actual work.
+      </p>
+    </section>
+
+    <section>
+      <span class="eyebrow">THE FIX</span>
+      <h2>Replace the restated rows, don't stack them.</h2>
+      <p>
+        Once "the newer file wins" is confirmed, the rule is simple: keep the rows in the older file
+        whose key is <em>not</em> in the newer file, then append the newer file whole. A left
+        anti-join does exactly that, and wrapping it in a function means the next file pair takes
+        thirty seconds.
+      </p>
+      <pre><span class="cmt">// fn-replace-restated-rows
+// Rows in `newer` win. Rows in `older` survive only if their key is not in `newer`.</span>
+( older as table, newer as table, keys as list ) as table =>
+let
+    NotRestated = Table.NestedJoin( older, keys, newer, keys, "restated", JoinKind.LeftAnti ),
+    Cleaned     = Table.RemoveColumns( NotRestated, { "restated" } ),
+    Combined    = Table.Combine( { Cleaned, newer } )
+in
+    Combined</pre>
+      <figcaption>Power Query (M) / shared/snippets/power-query/fn-replace-restated-rows.pq</figcaption>
+      <h3>Calling it</h3>
+      <pre>Sales = fn_replace_restated_rows( Sales_V1, Sales_V2, { "Region", "Period" } )</pre>
+      <p>
+        Then run the key check again. Zero duplicates, and a total you can defend line by line.
+      </p>
+      <h3>Two things to watch</h3>
+      <ul>
+        <li><strong>Column names must match exactly.</strong> <code>Table.Combine</code> unions the
+          column sets, so one renamed column gives you a half-null extra column instead of an error.
+          Normalise names before combining.</li>
+        <li><strong>Anti-join direction matters.</strong> <code>JoinKind.LeftAnti</code> keeps rows
+          from the <em>first</em> table that have no match in the second. Swap the arguments and you
+          have quietly decided the opposite version wins.</li>
+      </ul>
+    </section>
+
+    <section>
+      <span class="eyebrow">THE HABIT</span>
+      <h2>Three questions before you click Append.</h2>
+      <ol>
+        <li><strong>What is the business key</strong> — the columns that make a row unique in
+          business terms, not in file terms?</li>
+        <li><strong>Do the sources overlap on it</strong>, and by how much?</li>
+        <li><strong>If they overlap, which version wins</strong> — and who told you that?</li>
+      </ol>
+      <p>
+        Answer them in the query, in writing, where the next person inherits the decision instead of
+        re-guessing it. A model that records <em>why</em> a row was dropped is worth more than one
+        that silently produced the right answer once.
+      </p>
+      <div class="callout">
+        <h3>The code is in the repo</h3>
+        <p>
+          The function and the key check are in
+          <a href="https://github.com/Bitanyanmi-MLSA/dev-days/tree/main/shared/snippets">shared/snippets</a>,
+          along with the DAX and M from the other notes. Change the key columns and they work as-is.
+        </p>
+        <p>
+          If you have ever appended two files that turned out to overlap — I would like to know what
+          gave it away.
+        </p>
+      </div>
+      <div class="next">
+        <a class="btn btn-primary" href="../case-studies/ghana-regional-sales.html">Read the full case study <span>↗</span></a>
+        <a class="btn btn-ghost" href="./">More notes <span>↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="mono">DATA WITH INTENTION © 2025</span>
+    <span class="mono">NOTE / APPENDING IS A DECISION</span>
+    <a class="mono" href="../index.html">BACK TO PORTFOLIO ↑</a>
+  </footer>
+</body>
+</html>

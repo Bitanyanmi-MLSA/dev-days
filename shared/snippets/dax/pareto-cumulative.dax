@@ -1,0 +1,41 @@
+// ---------------------------------------------------------------------------
+// Pareto cumulative %
+// ---------------------------------------------------------------------------
+// Answers "how much of the catalogue earns 80% of the revenue?" — a running
+// total across categories ordered from largest to smallest, as a share of the
+// visible total. Put [Pareto Cumulative %] on a line over a sorted bar chart of
+// [Total Revenue] by category and the 80% cut-off becomes a line you can point
+// at instead of a claim.
+//
+// ALLSELECTED is deliberate: the denominator respects slicers (year, region)
+// but ignores the category currently being evaluated in the visual.
+// Replace products[category] and [Total Revenue] with your own.
+// ---------------------------------------------------------------------------
+
+Revenue Running Total =
+VAR CurrentRevenue = [Total Revenue]
+VAR CategoryRevenue =
+    ADDCOLUMNS (
+        ALLSELECTED ( products[category] ),
+        "@Revenue", CALCULATE ( [Total Revenue] )
+    )
+VAR BiggerOrEqual =
+    FILTER ( CategoryRevenue, [@Revenue] >= CurrentRevenue )
+RETURN
+    IF ( NOT ISBLANK ( CurrentRevenue ), SUMX ( BiggerOrEqual, [@Revenue] ) )
+
+// ---------------------------------------------------------------------------
+
+Pareto Cumulative % =
+DIVIDE (
+    [Revenue Running Total],
+    CALCULATE ( [Total Revenue], ALLSELECTED ( products[category] ) )
+)
+
+// ---------------------------------------------------------------------------
+
+Category Rank =
+IF (
+    NOT ISBLANK ( [Total Revenue] ),
+    RANKX ( ALLSELECTED ( products[category] ), [Total Revenue], , DESC, DENSE )
+)

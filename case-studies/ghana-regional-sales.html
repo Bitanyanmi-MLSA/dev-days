@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Power Query case study: two regional sales extracts that looked appendable. Appending them overstated sales by GHS 725,600 — 33%." />
+  <title>Ghana Regional Sales | Bitanyanmi</title>
+  <link rel="icon" href="../shared/assets/Passport.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{--ink:#0d1d2a;--navy:#102d3b;--teal:#52d6c4;--cream:#f5f2ec;--orange:#ff8f5c;--muted:#65727a;--line:#d9dfdc;--green:#0b6e4f}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:Manrope,sans-serif}
+    .mono{font-family:"DM Mono",monospace;letter-spacing:1px}
+    code{font-family:"DM Mono",monospace;font-size:12px;background:#f0efe9;padding:1px 5px;border-radius:3px;color:var(--ink)}
+
+    header{padding:80px 8vw 60px;background:var(--navy);color:#fff}
+    .backlink{display:inline-flex;align-items:center;gap:9px;color:var(--teal);text-decoration:none;font-size:11px;font-weight:800;margin-bottom:32px}
+    .backlink:hover{color:#fff}
+    .kicker{font-size:10px;letter-spacing:1.5px;color:var(--orange)}
+    h1{font-size:clamp(38px,5.4vw,68px);line-height:1.03;letter-spacing:-3px;margin:20px 0 22px;max-width:15ch}
+    h1 span{color:var(--teal)}
+    .standfirst{max-width:560px;color:#bccbd0;line-height:1.75;font-size:15px;margin:0}
+    .standfirst b{color:#fff;font-weight:700}
+    .meta{display:flex;flex-wrap:wrap;gap:38px;margin-top:46px;padding-top:28px;border-top:1px solid #2d5261}
+    .meta div small{display:block;font:9px "DM Mono";letter-spacing:1px;color:#7f989f;margin-bottom:8px}
+    .meta div strong{font-size:13px;font-weight:700}
+
+    main{padding:0 8vw 90px}
+    section{padding:70px 0;border-bottom:1px solid var(--line)}
+    section:last-of-type{border-bottom:0}
+    .eyebrow{font:10px "DM Mono";letter-spacing:1.5px;color:var(--orange);display:block;margin-bottom:16px}
+    h2{font-size:clamp(28px,3.4vw,42px);letter-spacing:-1.8px;line-height:1.08;margin:0 0 22px}
+    h3{font-size:18px;letter-spacing:-.6px;margin:0 0 9px}
+    p{color:var(--muted);font-size:14px;line-height:1.8;max-width:68ch;margin:0 0 16px}
+    p strong{color:var(--ink)}
+
+    .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:8px}
+    .kpi{background:#fff;padding:24px 22px}
+    .kpi small{display:block;font:9px "DM Mono";letter-spacing:1px;color:var(--muted);margin-bottom:11px}
+    .kpi strong{display:block;font-size:29px;letter-spacing:-1.5px;line-height:1}
+    .kpi strong i{font-style:normal;font-size:16px}
+    .kpi em{display:block;font-style:normal;font-size:10px;color:var(--muted);margin-top:8px}
+    .kpi.hero-kpi{background:var(--ink);color:#fff}
+    .kpi.hero-kpi small,.kpi.hero-kpi em{color:#8fa8ae}
+    .kpi.hero-kpi strong{color:var(--teal)}
+
+    .findings{display:grid;gap:2px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+    .finding{background:#fff;padding:28px 30px;display:grid;grid-template-columns:52px 1fr;gap:20px;align-items:start}
+    .finding .n{font:11px "DM Mono";color:var(--orange);padding-top:4px}
+    .finding p{margin:0;font-size:13px}
+    .pull{display:inline-block;margin-top:14px;padding:9px 14px;background:#eef6f3;border-left:3px solid var(--green);font:11px "DM Mono";color:var(--green);line-height:1.6}
+
+    .traps{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:16px;margin-top:10px}
+    .trap{background:#fff;border:1px solid var(--line);border-top:3px solid var(--orange);border-radius:6px;padding:24px}
+    .trap h3{font-size:15px}
+    .trap p{font-size:12.5px;margin:0}
+    .trap code{font-size:11.5px}
+
+    table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;font-size:13px}
+    th,td{text-align:left;padding:13px 18px;border-bottom:1px solid var(--line)}
+    th{font:9px "DM Mono";letter-spacing:1px;color:var(--muted);background:#faf9f5}
+    tr:last-child td{border-bottom:0}
+
+    .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+    .chip{border:1px solid var(--line);background:#fff;border-radius:20px;padding:7px 13px;font:11px "DM Mono";color:var(--ink)}
+
+    .shot{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:0 0 16px}
+    .shot img{display:block;width:100%;height:auto}
+    .shot figcaption{padding:14px 20px;font:10px "DM Mono";color:var(--muted);border-top:1px solid var(--line)}
+    .shot-placeholder{display:grid;place-items:center;min-height:230px;padding:40px;text-align:center;background:repeating-linear-gradient(135deg,#fbfaf6 0 12px,#f4f2ec 12px 24px);color:var(--muted)}
+    .shot-placeholder b{display:block;font-size:14px;color:var(--ink);margin-bottom:8px}
+    .shot-placeholder span{font-size:12px;line-height:1.7;max-width:46ch;display:block}
+
+    .callout{background:var(--ink);color:#fff;border-radius:8px;padding:34px 36px;margin-top:10px}
+    .callout h3{color:var(--teal);font-size:15px}
+    .callout p{color:#a9bdc2;font-size:13px;margin:0;max-width:74ch}
+    .callout p+p{margin-top:12px}
+    .callout strong{color:#fff}
+
+    .next{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+    .btn{display:inline-flex;align-items:center;gap:16px;border-radius:4px;padding:15px 22px;font-size:11px;font-weight:800;text-decoration:none;transition:.2s}
+    .btn:hover{transform:translateY(-2px)}
+    .btn-primary{background:var(--ink);color:#fff}
+    .btn-ghost{border:1px solid var(--ink);color:var(--ink)}
+
+    footer{padding:26px 8vw;background:var(--ink);color:#8ba1a6;font-size:9px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    footer a{color:#8ba1a6;text-decoration:none}
+    footer a:hover{color:#fff}
+
+    @media(max-width:720px){
+      header{padding:58px 7vw 46px}
+      main{padding:0 7vw 70px}
+      section{padding:52px 0}
+      .meta{gap:26px}
+      .finding{grid-template-columns:1fr;gap:10px}
+      footer{padding:24px 7vw}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="backlink" href="../index.html">← Back to portfolio</a>
+    <span class="kicker mono">CASE STUDY / POWER QUERY</span>
+    <h1>Two files. <span>One truth.</span></h1>
+    <p class="standfirst">
+      Two regional sales extracts, same columns, same shape. Stacking them took one click and
+      produced a total that was wrong by a third.
+      <b>The work was not the append — it was proving which of the two files to believe.</b>
+    </p>
+    <div class="meta">
+      <div><small>ROLE</small><strong>Reconciliation, data quality, reporting</strong></div>
+      <div><small>TOOLS</small><strong>Power Query (M) · Excel · DAX</strong></div>
+      <div><small>DATA</small><strong>Private regional extract · 2 files</strong></div>
+      <div><small>CURRENCY</small><strong>Ghana Cedi (GHS)</strong></div>
+      <div><small>OUTCOME</small><strong>Validated total, reproducible</strong></div>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <span class="eyebrow">THE SHAPE OF THE PROBLEM</span>
+      <h2>What the two files<br />actually were.</h2>
+      <p>
+        Two extracts of the same regional sales report arrived days apart. Identical headers,
+        identical grain, no obvious duplicates when you scroll. Four regions appeared in both
+        files — <strong>with different values</strong>, because the second file restated them
+        after a correction upstream. Nothing in either file said so.
+      </p>
+      <p>
+        Appended, those four regions were counted twice: once at the old value and once at the
+        corrected one. The result looked plausible, sat in the right order of magnitude, and was
+        wrong by <strong>GHS 725,600</strong>.
+      </p>
+      <div class="kpis">
+        <div class="kpi"><small>FILES RECONCILED</small><strong>2</strong><em>same columns, same grain</em></div>
+        <div class="kpi"><small>REGIONS IN BOTH FILES</small><strong>4</strong><em>restated, not new</em></div>
+        <div class="kpi"><small>OVERSTATEMENT</small><strong>GHS 725,600</strong><em>from a plain append</em></div>
+        <div class="kpi hero-kpi"><small>ERROR IF UNCHECKED</small><strong>33%</strong><em>above the validated total</em></div>
+      </div>
+    </section>
+
+    <section>
+      <span class="eyebrow">WHY IT SLIPS THROUGH</span>
+      <h2>An append is a decision,<br />not a step.</h2>
+      <p>
+        Power Query makes combining files feel like housekeeping. It isn't — it is a claim that
+        the two sources are disjoint. Three things hid the overlap here.
+      </p>
+      <div class="traps">
+        <div class="trap">
+          <h3>No duplicate rows</h3>
+          <p>
+            The overlapping records were not identical, so <em>Remove Duplicates</em> found nothing
+            and every row-level check passed. Duplication has to be tested on the
+            <strong>business key</strong> — region and period — not on the whole row.
+          </p>
+        </div>
+        <div class="trap">
+          <h3>No file said it was a restatement</h3>
+          <p>
+            Neither extract carried a version, a run date, or an <code>as_of</code> column. Which
+            file supersedes the other was a question for the people who produced them, not
+            something to infer from the data.
+          </p>
+        </div>
+        <div class="trap">
+          <h3>The wrong total is believable</h3>
+          <p>
+            A 33% overstatement does not look like an error. It looks like a good quarter — which
+            is exactly why nobody questions it until a decision has already been made on it.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <span class="eyebrow">HOW IT WAS RECONCILED</span>
+      <h2>Four checks, in this order.</h2>
+      <div class="findings">
+        <article class="finding">
+          <span class="n mono">01</span>
+          <div>
+            <h3>Count rows against distinct keys</h3>
+            <p>
+              Group each file by <strong>region + period</strong> and compare the row count to the
+              distinct key count — in each file separately, then in the appended query. The append
+              was the only one where the two numbers diverged, which located the problem before
+              any measure was written.
+            </p>
+            <span class="pull">Row count = distinct key count is the cheapest data-quality test there is</span>
+          </div>
+        </article>
+        <article class="finding">
+          <span class="n mono">02</span>
+          <div>
+            <h3>Name the overlap explicitly</h3>
+            <p>
+              An inner merge of the two files on the business key returns exactly the rows that
+              exist in both — four regions here. Anti-joins in each direction return what is unique
+              to each file. Together they answer "how much do these files really share?" in one screen.
+            </p>
+          </div>
+        </article>
+        <article class="finding">
+          <span class="n mono">03</span>
+          <div>
+            <h3>Decide which version wins — with the source, not alone</h3>
+            <p>
+              The overlapping values differed, so one of them was stale. That is a question for
+              whoever produced the files. Confirmed as a restatement, the rule became
+              <strong>the newer file wins</strong> — recorded in the query so the next person
+              inherits the decision instead of re-guessing it.
+            </p>
+          </div>
+        </article>
+        <article class="finding">
+          <span class="n mono">04</span>
+          <div>
+            <h3>Replace, then re-total</h3>
+            <p>
+              Keep the rows in the older file whose key is <em>not</em> in the newer one, append the
+              newer file whole, and re-run check 01. The validated total came in
+              <strong>GHS 725,600 lower</strong> than the naive append — a 33% difference between
+              a defensible number and a confident one.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <span class="eyebrow">HOW IT IS BUILT</span>
+      <h2>The query chain.</h2>
+      <p>
+        All of it happens in Power Query, so the two source files stay untouched and the whole
+        reconciliation re-runs on refresh. Nothing is fixed by hand in a cell.
+      </p>
+      <table>
+        <thead>
+          <tr><th>QUERY</th><th>WHAT IT DOES</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Sales_V1</strong> / <strong>Sales_V2</strong></td><td>Load each extract, type the columns, trim text, build the region + period key.</td></tr>
+          <tr><td><strong>Overlap</strong></td><td>Inner merge on the key — the four restated regions, kept as a visible audit query.</td></tr>
+          <tr><td><strong>Sales</strong></td><td>V1 rows whose key is not in V2, appended to V2 in full. The reporting table.</td></tr>
+          <tr><td><strong>QA_KeyCheck</strong></td><td>Row count vs distinct key count. It should return zero difference on every refresh.</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:26px">
+        The replace-don't-append step is published as a reusable function in this repo —
+        <code>shared/snippets/power-query/fn-replace-restated-rows.pq</code>. The
+        <a href="../blog/appending-two-extracts-is-a-decision.html">write-up of the pattern</a>
+        walks through it line by line.
+      </p>
+      <div class="chips">
+        <span class="chip">Table.NestedJoin</span><span class="chip">JoinKind.LeftAnti</span>
+        <span class="chip">Table.Combine</span><span class="chip">Table.Distinct</span>
+        <span class="chip">Table.RowCount</span><span class="chip">Group By</span>
+      </div>
+    </section>
+
+    <section>
+      <span class="eyebrow">THE REPORT</span>
+      <h2>What the client saw.</h2>
+
+      <!--
+        FIGURES — how to add them
+        This project uses private data, so nothing is published here that identifies the
+        business or shows region-level values. To fill the panels below:
+          1. Reproduce the totals in the workbook (naive append vs validated), then
+             replace the placeholder text with the figures you can point at in the file.
+          2. For a screenshot, capture only the QA / reconciliation view with region names
+             and values masked or replaced with dummy labels. Save it in this folder as
+             ghana-reconciliation.png, delete the .shot-placeholder div, and uncomment the <img>.
+        Never publish the underlying extract, and never use Power BI "Publish to web"
+        for this report — it makes the data public to anyone with the link.
+      -->
+
+      <figure class="shot">
+        <!-- <img src="ghana-reconciliation.png" alt="Reconciliation view comparing the naive append with the validated total" /> -->
+        <div class="shot-placeholder">
+          <b>Reconciliation view</b>
+          <span>Naive append against the validated total, the four overlapping regions listed
+          side by side at both values, and the key check that has to return zero before the
+          report is trusted. Screenshot pending — to be added with region labels masked.</span>
+        </div>
+        <figcaption>QA VIEW / APPEND vs VALIDATED</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <span class="eyebrow">BEING STRAIGHT ABOUT IT</span>
+      <h2>Scope and honesty.</h2>
+      <div class="callout">
+        <h3>What this is, and what it isn't</h3>
+        <p>
+          This is a reconciliation of a <strong>private regional sales extract</strong>. The source
+          files are not in this repository and will not be published, so the only figures shown
+          here are the two that describe the error itself: <strong>GHS 725,600</strong> and
+          <strong>33%</strong>. Region-level values stay with the owner of the data.
+        </p>
+        <p>
+          There is no dashboard-of-the-year screenshot attached to it, because the value was not in
+          the visuals. It was in refusing to append two files that looked appendable, and being able
+          to show — on refresh, repeatably — why the smaller number is the right one.
+        </p>
+        <p>
+          Known limits — the restatement rule ("newer file wins") was confirmed with the data owner
+          and is not inferred from the files; had the answer been "both are partial", the correct
+          fix would have been a merge on the key rather than a replacement.
+        </p>
+      </div>
+      <div class="next">
+        <a class="btn btn-primary" href="../index.html#contact">Talk about a similar project <span>↗</span></a>
+        <a class="btn btn-ghost" href="olist-retail-analytics.html">Read the Olist case study <span>↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="mono">DATA WITH INTENTION © 2025</span>
+    <span class="mono">GHANA REGIONAL SALES / POWER QUERY CASE STUDY</span>
+    <a class="mono" href="../index.html">BACK TO PORTFOLIO ↑</a>
+  </footer>
+</body>
+</html>

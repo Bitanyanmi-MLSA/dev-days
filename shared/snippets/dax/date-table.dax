@@ -1,0 +1,32 @@
+// ---------------------------------------------------------------------------
+// Date table
+// ---------------------------------------------------------------------------
+// A calculated date table built from the fact table's own range, so it can
+// never be shorter than the data. Create it with Modeling > New table, then
+// mark it as a date table (Table tools > Mark as date table > Date).
+//
+// Replace  Sales[OrderDate]  with your fact table's date column.
+// Sort "Month" by "Month Number" and "Year Month" by "Year Month Number"
+// in Column tools > Sort by column, or months will sort alphabetically.
+// ---------------------------------------------------------------------------
+
+Date =
+VAR FirstDate = MIN ( Sales[OrderDate] )
+VAR LastDate  = MAX ( Sales[OrderDate] )
+VAR BaseDates =
+    CALENDAR (
+        DATE ( YEAR ( FirstDate ), 1, 1 ),
+        DATE ( YEAR ( LastDate ), 12, 31 )
+    )
+RETURN
+    ADDCOLUMNS (
+        BaseDates,
+        "Year",             YEAR ( [Date] ),
+        "Quarter",          "Q" & QUARTER ( [Date] ),
+        "Month Number",     MONTH ( [Date] ),
+        "Month",            FORMAT ( [Date], "mmm" ),
+        "Year Month",       FORMAT ( [Date], "yyyy mmm" ),
+        "Year Month Number", YEAR ( [Date] ) * 100 + MONTH ( [Date] ),
+        "Day of Week",      FORMAT ( [Date], "ddd" ),
+        "Is Weekend",       WEEKDAY ( [Date], 2 ) > 5
+    )
